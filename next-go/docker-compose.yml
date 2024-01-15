@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  next-go-api:
+    tty: true
+    build: ./api
+    container_name: next-go-api
+    working_dir: /app
+    volumes:
+      - ./api:/app
+  # next-go-web:
+  #   tty: true
+  #   build: ./web
+  #   container_name: next-go-web
+  #   working_dir: /app
+  #   volumes:
+  #     - ./web:/app
+  next-go-db:
+    image: mysql:8.0.33
+    container_name: next-go-db
+    environment:
+      MYSQL_DATABASE: goa
+      MYSQL_USER: user
+      MYSQL_PASSWORD: mysql
+      MYSQL_ROOT_PASSWORD: mysql
+    ports:
+      - 5000:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
