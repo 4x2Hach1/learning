@@ -77,3 +77,66 @@ func DecodeHelloResponse(decoder func(*http.Response) goahttp.Decoder, restoreBo
 		}
 	}
 }
+
+// BuildUsersRequest instantiates a HTTP request object with method and path
+// set to call the "server" service "users" endpoint
+func (c *Client) BuildUsersRequest(ctx context.Context, v any) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: UsersServerPath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("server", "users", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// DecodeUsersResponse returns a decoder for responses returned by the server
+// users endpoint. restoreBody controls whether the response body should be
+// restored after having been read.
+func DecodeUsersResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (any, error) {
+	return func(resp *http.Response) (any, error) {
+		if restoreBody {
+			b, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body UsersResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("server", "users", err)
+			}
+			res := NewUsersUserOK(body)
+			return res, nil
+		default:
+			body, _ := io.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("server", "users", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// unmarshalUserResponseToServerUser builds a value of type *server.User from a
+// value of type *UserResponse.
+func unmarshalUserResponseToServerUser(v *UserResponse) *server.User {
+	res := &server.User{
+		ID:    v.ID,
+		Name:  v.Name,
+		Email: v.Email,
+	}
+
+	return res
+}

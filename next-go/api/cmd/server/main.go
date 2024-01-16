@@ -12,8 +12,8 @@ import (
 	"sync"
 	"syscall"
 
-	api "github.com/4x2Hach1/learning/next-go/api"
 	server "github.com/4x2Hach1/learning/next-go/api/gen/server"
+	api "github.com/4x2Hach1/learning/next-go/api/services"
 )
 
 func main() {

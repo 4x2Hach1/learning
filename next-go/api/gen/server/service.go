@@ -15,6 +15,8 @@ import (
 type Service interface {
 	// Hello implements hello.
 	Hello(context.Context, *HelloPayload) (res string, err error)
+	// Users implements users.
+	Users(context.Context) (res []*User, err error)
 }
 
 // APIName is the name of the API as defined in the design.
@@ -31,10 +33,19 @@ const ServiceName = "server"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [1]string{"hello"}
+var MethodNames = [2]string{"hello", "users"}
 
 // HelloPayload is the payload type of the server service hello method.
 type HelloPayload struct {
 	// Name
 	Name string
+}
+
+type User struct {
+	// ID
+	ID *int
+	// Name
+	Name *string
+	// Email
+	Email *bool
 }

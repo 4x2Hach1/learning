@@ -6,3 +6,32 @@
 // $ goa gen github.com/4x2Hach1/learning/next-go/api/design
 
 package client
+
+import (
+	server "github.com/4x2Hach1/learning/next-go/api/gen/server"
+)
+
+// UsersResponseBody is the type of the "server" service "users" endpoint HTTP
+// response body.
+type UsersResponseBody []*UserResponse
+
+// UserResponse is used to define fields on response body types.
+type UserResponse struct {
+	// ID
+	ID *int `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Name
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// Email
+	Email *bool `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+}
+
+// NewUsersUserOK builds a "server" service "users" endpoint result from a HTTP
+// "OK" response.
+func NewUsersUserOK(body []*UserResponse) []*server.User {
+	v := make([]*server.User, len(body))
+	for i, val := range body {
+		v[i] = unmarshalUserResponseToServerUser(val)
+	}
+
+	return v
+}

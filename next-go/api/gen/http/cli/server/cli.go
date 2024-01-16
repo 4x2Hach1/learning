@@ -22,13 +22,13 @@ import (
 //
 //	command (subcommand1|subcommand2|...)
 func UsageCommands() string {
-	return `server hello
+	return `server (hello|users)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` server hello --name "Sunt cum aut blanditiis accusantium."` + "\n" +
+	return os.Args[0] + ` server hello --name "Quia quo alias aut quo."` + "\n" +
 		""
 }
 
@@ -46,9 +46,12 @@ func ParseEndpoint(
 
 		serverHelloFlags    = flag.NewFlagSet("hello", flag.ExitOnError)
 		serverHelloNameFlag = serverHelloFlags.String("name", "REQUIRED", "Name")
+
+		serverUsersFlags = flag.NewFlagSet("users", flag.ExitOnError)
 	)
 	serverFlags.Usage = serverUsage
 	serverHelloFlags.Usage = serverHelloUsage
+	serverUsersFlags.Usage = serverUsersUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -87,6 +90,9 @@ func ParseEndpoint(
 			case "hello":
 				epf = serverHelloFlags
 
+			case "users":
+				epf = serverUsersFlags
+
 			}
 
 		}
@@ -115,6 +121,9 @@ func ParseEndpoint(
 			case "hello":
 				endpoint = c.Hello()
 				data, err = serverc.BuildHelloPayload(*serverHelloNameFlag)
+			case "users":
+				endpoint = c.Users()
+				data = nil
 			}
 		}
 	}
@@ -133,6 +142,7 @@ Usage:
 
 COMMAND:
     hello: Hello implements hello.
+    users: Users implements users.
 
 Additional help:
     %[1]s server COMMAND --help
@@ -145,6 +155,16 @@ Hello implements hello.
     -name STRING: Name
 
 Example:
-    %[1]s server hello --name "Sunt cum aut blanditiis accusantium."
+    %[1]s server hello --name "Quia quo alias aut quo."
+`, os.Args[0])
+}
+
+func serverUsersUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] server users
+
+Users implements users.
+
+Example:
+    %[1]s server users
 `, os.Args[0])
 }

@@ -11,6 +11,30 @@ import (
 	server "github.com/4x2Hach1/learning/next-go/api/gen/server"
 )
 
+// UsersResponseBody is the type of the "server" service "users" endpoint HTTP
+// response body.
+type UsersResponseBody []*UserResponse
+
+// UserResponse is used to define fields on response body types.
+type UserResponse struct {
+	// ID
+	ID *int `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Name
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// Email
+	Email *bool `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+}
+
+// NewUsersResponseBody builds the HTTP response body from the result of the
+// "users" endpoint of the "server" service.
+func NewUsersResponseBody(res []*server.User) UsersResponseBody {
+	body := make([]*UserResponse, len(res))
+	for i, val := range res {
+		body[i] = marshalServerUserToUserResponse(val)
+	}
+	return body
+}
+
 // NewHelloPayload builds a server service hello endpoint payload.
 func NewHelloPayload(name string) *server.HelloPayload {
 	v := &server.HelloPayload{}

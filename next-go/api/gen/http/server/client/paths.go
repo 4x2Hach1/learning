@@ -15,3 +15,8 @@ import (
 func HelloServerPath(name string) string {
 	return fmt.Sprintf("/hello/%v", name)
 }
+
+// UsersServerPath returns the URL path to the server service users HTTP endpoint.
+func UsersServerPath() string {
+	return "/users"
+}

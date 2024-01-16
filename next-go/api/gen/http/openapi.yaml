@@ -32,3 +32,41 @@ paths:
                         type: string
             schemes:
                 - http
+    /users:
+        get:
+            tags:
+                - server
+            summary: users server
+            operationId: server#users
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/definitions/UserResponse'
+            schemes:
+                - http
+definitions:
+    UserResponse:
+        title: 'Mediatype identifier: user; view=default'
+        type: object
+        properties:
+            email:
+                type: boolean
+                description: Email
+                example: false
+            id:
+                type: integer
+                description: ID
+                example: 5662336933204789771
+                format: int64
+            name:
+                type: string
+                description: Name
+                example: In aut mollitia illum.
+        description: UserResponse result type (default view)
+        example:
+            email: false
+            id: 5630377860693557564
+            name: Quis exercitationem ut ipsum.

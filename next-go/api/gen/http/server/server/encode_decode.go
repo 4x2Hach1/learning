@@ -11,6 +11,7 @@ import (
 	"context"
 	"net/http"
 
+	server "github.com/4x2Hach1/learning/next-go/api/gen/server"
 	goahttp "goa.design/goa/v3/http"
 )
 
@@ -40,4 +41,28 @@ func DecodeHelloRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.D
 
 		return payload, nil
 	}
+}
+
+// EncodeUsersResponse returns an encoder for responses returned by the server
+// users endpoint.
+func EncodeUsersResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, any) error {
+	return func(ctx context.Context, w http.ResponseWriter, v any) error {
+		res, _ := v.([]*server.User)
+		enc := encoder(ctx, w)
+		body := NewUsersResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// marshalServerUserToUserResponse builds a value of type *UserResponse from a
+// value of type *server.User.
+func marshalServerUserToUserResponse(v *server.User) *UserResponse {
+	res := &UserResponse{
+		ID:    v.ID,
+		Name:  v.Name,
+		Email: v.Email,
+	}
+
+	return res
 }

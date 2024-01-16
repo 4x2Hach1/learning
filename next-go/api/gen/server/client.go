@@ -16,12 +16,14 @@ import (
 // Client is the "server" service client.
 type Client struct {
 	HelloEndpoint goa.Endpoint
+	UsersEndpoint goa.Endpoint
 }
 
 // NewClient initializes a "server" service client given the endpoints.
-func NewClient(hello goa.Endpoint) *Client {
+func NewClient(hello, users goa.Endpoint) *Client {
 	return &Client{
 		HelloEndpoint: hello,
+		UsersEndpoint: users,
 	}
 }
 
@@ -33,4 +35,14 @@ func (c *Client) Hello(ctx context.Context, p *HelloPayload) (res string, err er
 		return
 	}
 	return ires.(string), nil
+}
+
+// Users calls the "users" endpoint of the "server" service.
+func (c *Client) Users(ctx context.Context) (res []*User, err error) {
+	var ires any
+	ires, err = c.UsersEndpoint(ctx, nil)
+	if err != nil {
+		return
+	}
+	return ires.([]*User), nil
 }

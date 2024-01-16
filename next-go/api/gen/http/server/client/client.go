@@ -20,6 +20,9 @@ type Client struct {
 	// Hello Doer is the HTTP client used to make requests to the hello endpoint.
 	HelloDoer goahttp.Doer
 
+	// Users Doer is the HTTP client used to make requests to the users endpoint.
+	UsersDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -41,6 +44,7 @@ func NewClient(
 ) *Client {
 	return &Client{
 		HelloDoer:           doer,
+		UsersDoer:           doer,
 		RestoreResponseBody: restoreBody,
 		scheme:              scheme,
 		host:                host,
@@ -63,6 +67,25 @@ func (c *Client) Hello() goa.Endpoint {
 		resp, err := c.HelloDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("server", "hello", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// Users returns an endpoint that makes HTTP requests to the server service
+// users server.
+func (c *Client) Users() goa.Endpoint {
+	var (
+		decodeResponse = DecodeUsersResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v any) (any, error) {
+		req, err := c.BuildUsersRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.UsersDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("server", "users", err)
 		}
 		return decodeResponse(resp)
 	}

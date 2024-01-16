@@ -28,4 +28,20 @@ var _ = Service("server", func() {
 			Response(StatusOK)
 		})
 	})
+
+	Method("users", func() {
+		Result(ArrayOf(User))
+		HTTP(func() {
+			GET("/users")
+			Response(StatusOK)
+		})
+	})
+})
+
+var User = ResultType("User", func() {
+	Attributes(func() {
+		Attribute("id", Int, "ID")
+		Attribute("name", String, "Name")
+		Attribute("email", Boolean, "Email")
+	})
 })

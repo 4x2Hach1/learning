@@ -1,4 +1,4 @@
-.PHONY: help init gen example run
+.PHONY: help init gen example run migrate
 .DEFAULT_GOAL := help
 
 help: ## ヘルプを表示する
@@ -10,6 +10,7 @@ init: ## 環境構築
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 	go install github.com/cosmtrek/air@latest
+	go install -tags mysql github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
 gen: ## designからの生成
 	goa gen github.com/4x2Hach1/learning/next-go/api/design
@@ -19,3 +20,6 @@ example: ## exampleの生成
 
 run: ## サーバーの起動
 	go run ./cmd/server
+
+migrate: ## migrate
+	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_TABLE}?multiStatements=true" -path=database/migrations/ up 1
