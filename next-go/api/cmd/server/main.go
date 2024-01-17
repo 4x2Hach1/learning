@@ -14,6 +14,7 @@ import (
 
 	server "github.com/4x2Hach1/learning/next-go/api/gen/server"
 	api "github.com/4x2Hach1/learning/next-go/api/services"
+	"github.com/jmoiron/sqlx"
 )
 
 func main() {
@@ -36,12 +37,29 @@ func main() {
 		logger = log.New(os.Stderr, "[api] ", log.Ltime)
 	}
 
+	var (
+		db  *sqlx.DB
+		DSN = fmt.Sprintf(
+			"%s:%s@tcp(%s:%s)/%s?parseTime=true&autocommit=0&sql_mode=%%27TRADITIONAL,NO_AUTO_VALUE_ON_ZERO,ONLY_FULL_GROUP_BY%%27",
+			os.Getenv("DB_USER"), os.Getenv("DB_PASS"),
+			os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_TABLE"),
+		)
+	)
+	{
+		var err error
+		db, err = sqlx.Open("mysql", DSN)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer db.Close()
+	}
+
 	// Initialize the services.
 	var (
 		serverSvc server.Service
 	)
 	{
-		serverSvc = api.NewServer(logger)
+		serverSvc = api.NewServer(db, logger)
 	}
 
 	// Wrap the services in endpoints that can be invoked from other services

@@ -3,7 +3,9 @@ package services
 import (
 	"log"
 
+	"github.com/4x2Hach1/learning/next-go/api/database/models"
 	server "github.com/4x2Hach1/learning/next-go/api/gen/server"
+	"github.com/jmoiron/sqlx"
 )
 
 // server service example implementation.
@@ -14,9 +16,10 @@ type serversrvc struct {
 }
 
 // NewServer returns the server service implementation.
-func NewServer(logger *log.Logger) server.Service {
+func NewServer(db *sqlx.DB, logger *log.Logger) server.Service {
+	sql := models.NewSqlDB(db)
 	return &serversrvc{
-		&helloService{logger},
-		&userService{logger},
+		&helloService{sql, logger},
+		&userService{sql, logger},
 	}
 }

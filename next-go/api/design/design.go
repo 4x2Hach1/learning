@@ -4,6 +4,11 @@ import (
 	. "goa.design/goa/v3/dsl"
 )
 
+var JWTAuth = JWTSecurity("jwt", func() {
+	Description("JWT based authentication")
+	Scope("api:access", "API access")
+})
+
 var _ = API("api", func() {
 	Title("Api Server Service")
 	Description("Api server server for front.")
@@ -30,6 +35,13 @@ var _ = Service("server", func() {
 	})
 
 	Method("users", func() {
+		Security(JWTAuth, func() {
+			Scope("api:access")
+		})
+		Payload(func() {
+			Token("token", String, "JWT token auth")
+			Required("token")
+		})
 		Result(ArrayOf(User))
 		HTTP(func() {
 			GET("/users")
@@ -42,6 +54,6 @@ var User = ResultType("User", func() {
 	Attributes(func() {
 		Attribute("id", Int, "ID")
 		Attribute("name", String, "Name")
-		Attribute("email", Boolean, "Email")
+		Attribute("email", String, "Email")
 	})
 })
