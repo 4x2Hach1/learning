@@ -11,6 +11,7 @@ type UserModel struct {
 	ID        int       `db:"id" json:"id"`
 	Name      string    `db:"name" json:"name"`
 	Email     string    `db:"email" json:"email"`
+	Password  string    `db:"password" json:"password"`
 	CreatedAt time.Time `db:"created_at" json:"created_at"`
 	UpdatedAt time.Time `db:"updated_at" json:"updated_at"`
 }
@@ -39,4 +40,30 @@ func (s *Sql) AllUsers(ctx context.Context) ([]*server.User, error) {
 	}
 
 	return converUsers(users), nil
+}
+
+func (s *Sql) UserById(ctx context.Context, id int) (*server.User, error) {
+	user := UserModel{}
+	if err := s.db.Get(&user, `SELECT * FROM users WHERE id = ?`, id); err != nil {
+		return nil, err
+	}
+
+	return converUser(&user), nil
+}
+
+func (s *Sql) NewUser(ctx context.Context, user *UserModel) error {
+	tx := s.db.MustBegin()
+	if _, err := tx.NamedExec(
+		`INSERT INTO users (name, email, password) VALUES (:name, :email, :password);`,
+		user,
+	); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+
+	return nil
 }

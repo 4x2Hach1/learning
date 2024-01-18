@@ -18,7 +18,7 @@ func TestJWTAuth(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	logger := log.New(os.Stderr, "[api] ", log.Ltime)
+	logger := log.New(os.Stderr, "[test] ", log.Ltime)
 	srv := services.ExportNewAuthService(db, logger)
 
 	tests := []struct {

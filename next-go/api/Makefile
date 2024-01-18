@@ -1,4 +1,4 @@
-.PHONY: help init gen example run migrate db-up db-down db-ver
+.PHONY: help init db-up db-down db-ver db-create gen example run test
 .DEFAULT_GOAL := help
 
 help: ## ヘルプを表示する
@@ -12,6 +12,15 @@ init: ## 環境構築
 	go install github.com/cosmtrek/air@latest
 	go install -tags mysql github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
+db-up: ## migrate
+	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_TABLE}?multiStatements=true" -path=database/migrations/ up
+db-down: ## migrate
+	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_TABLE}?multiStatements=true" -path=database/migrations/ down
+db-ver: ## migrate
+	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_TABLE}?multiStatements=true" -path=database/migrations/ version
+db-create-%: ## migrate
+	migrate create -ext sql -dir database/migrations -seq ${@:db-create-%=%}
+
 gen: ## designからの生成
 	goa gen github.com/4x2Hach1/learning/next-go/api/design
 
@@ -21,11 +30,5 @@ example: ## exampleの生成
 run: ## サーバーの起動
 	export $$(cat ./.env | grep -v ^# | xargs); air
 
-db-up: ## migrate
-	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_TABLE}?multiStatements=true" -path=database/migrations/ up
-db-up: ## migrate
-	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_TABLE}?multiStatements=true" -path=database/migrations/ down
-db-ver: ## migrate
-	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_TABLE}?multiStatements=true" -path=database/migrations/ version
-db-create-%: ## migrate
-	migrate create -ext sql -dir database/migrations -seq ${@:db-create-%=%}
+test: ## すべてのテスト
+	export $$(cat ./.env | grep -v ^# | xargs); go test -cover -v -bench . -benchmem ./...

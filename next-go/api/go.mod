@@ -2,7 +2,7 @@ module github.com/4x2Hach1/learning/next-go/api
 
 go 1.21.4
 
-require goa.design/goa/v3 v3.14.5
+require goa.design/goa/v3 v3.14.6
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -21,6 +21,7 @@ require (
 	github.com/manveru/faker v0.0.0-20171103152722-9fbc68a78c4d // indirect
 	github.com/sergi/go-diff v1.3.1 // indirect
 	github.com/stretchr/testify v1.8.4
+	goa.design/plugins/v3 v3.14.6
 	golang.org/x/mod v0.14.0 // indirect
 	golang.org/x/net v0.20.0 // indirect
 	golang.org/x/text v0.14.0 // indirect

@@ -18,7 +18,7 @@ func TestHello(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	logger := log.New(os.Stderr, "[api] ", log.Ltime)
+	logger := log.New(os.Stderr, "[test] ", log.Ltime)
 	srv := services.ExportNewHelloService(db, logger)
 
 	tests := []struct {

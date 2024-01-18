@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 
 	"github.com/4x2Hach1/learning/next-go/api/database/models"
@@ -16,7 +15,7 @@ type authService struct {
 }
 
 func (s *authService) JWTAuth(ctx context.Context, token string, schema *security.JWTScheme) (context.Context, error) {
-	fmt.Println(token)
+	s.logger.Print("server.JWTAuth", token)
 	if token != "token" {
 		return ctx, errors.New("invalid token")
 	}

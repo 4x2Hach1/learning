@@ -2,6 +2,7 @@ package design
 
 import (
 	. "goa.design/goa/v3/dsl"
+	cors "goa.design/plugins/v3/cors/dsl"
 )
 
 var JWTAuth = JWTSecurity("jwt", func() {
@@ -21,6 +22,13 @@ var _ = API("api", func() {
 
 var _ = Service("server", func() {
 	Description("Server Service for front.")
+	cors.Origin("/.*localhost.*/", func() {
+		cors.Headers("X-Shared-Secret")
+		cors.Methods("GET", "POST")
+		cors.Expose("X-Time", "X-Api-Version")
+		cors.MaxAge(100)
+		cors.Credentials()
+	})
 
 	Method("hello", func() {
 		Payload(func() {
@@ -45,6 +53,40 @@ var _ = Service("server", func() {
 		Result(ArrayOf(User))
 		HTTP(func() {
 			GET("/users")
+			Response(StatusOK)
+		})
+	})
+
+	Method("userById", func() {
+		Security(JWTAuth, func() {
+			Scope("api:access")
+		})
+		Payload(func() {
+			Token("token", String, "JWT token auth")
+			Attribute("id", Int, "ID")
+			Required("token", "id")
+		})
+		Result(User)
+		HTTP(func() {
+			GET("/user/{id}")
+			Response(StatusOK)
+		})
+	})
+
+	Method("newUser", func() {
+		Security(JWTAuth, func() {
+			Scope("api:access")
+		})
+		Payload(func() {
+			Token("token", String, "JWT token auth")
+			Attribute("name", String, "Name")
+			Attribute("email", String, "Email")
+			Attribute("password", String, "Password")
+			Required("token", "name", "email", "password")
+		})
+		Result(Boolean)
+		HTTP(func() {
+			POST("/user")
 			Response(StatusOK)
 		})
 	})

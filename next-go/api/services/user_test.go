@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	users_column = []string{"id", "name", "email", "created_at", "updated_at"}
+	users_column = []string{"id", "name", "email", "password", "created_at", "updated_at"}
 )
 
 func TestUsers(t *testing.T) {
@@ -24,7 +24,7 @@ func TestUsers(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	logger := log.New(os.Stderr, "[api] ", log.Ltime)
+	logger := log.New(os.Stderr, "[test] ", log.Ltime)
 	srv := services.ExportNewUserService(db, logger)
 	now := time.Now()
 
@@ -37,8 +37,8 @@ func TestUsers(t *testing.T) {
 			"users ok",
 			&server.UsersPayload{Token: "token"},
 			func(s sqlmock.Sqlmock) int {
-				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM users`)).WillReturnRows(
-					s.NewRows(users_column).AddRow(1, "user", "test@example.com", now, now),
+				s.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM users`)).WillReturnRows(
+					s.NewRows(users_column).AddRow(1, "user", "test@example.com", "password", now, now),
 				)
 
 				return 1
@@ -53,6 +53,92 @@ func TestUsers(t *testing.T) {
 
 			assert.Nil(t, err, "error must nil")
 			assert.Equal(t, expected, len(res), "res must equal")
+		})
+	}
+}
+
+func TestUserByID(t *testing.T) {
+	db, mock, err := services.ExportSetUpMockDB()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	logger := log.New(os.Stderr, "[test] ", log.Ltime)
+	srv := services.ExportNewUserService(db, logger)
+	now := time.Now()
+
+	tests := []struct {
+		title string
+		param *server.UserByIDPayload
+		setup func(sqlmock.Sqlmock)
+	}{
+		{
+			"user ok",
+			&server.UserByIDPayload{Token: "", ID: 1},
+			func(s sqlmock.Sqlmock) {
+				s.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM users`)).WillReturnRows(
+					s.NewRows(users_column).AddRow(1, "user", "test@example.com", "password", now, now),
+				)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.title, func(t *testing.T) {
+			tt.setup(mock)
+			res, err := srv.UserByID(context.Background(), tt.param)
+
+			assert.Nil(t, err, "error must nil")
+			assert.NotNil(t, res, "res not nil")
+		})
+	}
+}
+
+func TestNewUser(t *testing.T) {
+	db, mock, err := services.ExportSetUpMockDB()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	logger := log.New(os.Stderr, "[test] ", log.Ltime)
+	srv := services.ExportNewUserService(db, logger)
+
+	tests := []struct {
+		title string
+		param *server.NewUserPayload
+		setup func(sqlmock.Sqlmock) bool
+	}{
+		{
+			"new user ok",
+			&server.NewUserPayload{
+				Token:    "",
+				Name:     "user",
+				Email:    "test@example.com",
+				Password: "password",
+			},
+			func(s sqlmock.Sqlmock) bool {
+				// s.ExpectQuery("SELECT count").WillReturnRows(
+				// 	sqlmock.NewRows([]string{"count"}).AddRow(0),
+				// )
+
+				s.ExpectBegin()
+				s.ExpectExec(regexp.QuoteMeta(`INSERT INTO users`)).WillReturnResult(
+					sqlmock.NewResult(1, 1),
+				)
+				s.ExpectCommit()
+
+				return true
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.title, func(t *testing.T) {
+			expected := tt.setup(mock)
+			res, err := srv.NewUser(context.Background(), tt.param)
+
+			assert.Nil(t, err, "error must nil")
+			assert.Equal(t, expected, res, "res must equal")
 		})
 	}
 }
