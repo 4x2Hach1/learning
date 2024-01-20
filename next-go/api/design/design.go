@@ -24,7 +24,7 @@ var _ = Service("server", func() {
 	Description("Server Service for front.")
 	cors.Origin("/.*localhost.*/", func() {
 		cors.Headers("X-Shared-Secret")
-		cors.Methods("GET", "POST")
+		cors.Methods("GET", "POST", "PATCH", "DELETE")
 		cors.Expose("X-Time", "X-Api-Version")
 		cors.MaxAge(100)
 		cors.Credentials()
@@ -38,6 +38,19 @@ var _ = Service("server", func() {
 		Result(String)
 		HTTP(func() {
 			GET("/hello/{name}")
+			Response(StatusOK)
+		})
+	})
+
+	Method("login", func() {
+		Payload(func() {
+			Attribute("email", String, "Email")
+			Attribute("password", String, "Password")
+			Required("email", "password")
+		})
+		Result(String)
+		HTTP(func() {
+			POST("/login")
 			Response(StatusOK)
 		})
 	})
@@ -87,6 +100,23 @@ var _ = Service("server", func() {
 		Result(Boolean)
 		HTTP(func() {
 			POST("/user")
+			Response(StatusOK)
+		})
+	})
+
+	Method("updateUser", func() {
+		Security(JWTAuth, func() {
+			Scope("api:access")
+		})
+		Payload(func() {
+			Token("token", String, "JWT token auth")
+			Attribute("name", String, "Name")
+			Attribute("email", String, "Email")
+			Required("token", "name", "email")
+		})
+		Result(Boolean)
+		HTTP(func() {
+			PATCH("/user")
 			Response(StatusOK)
 		})
 	})

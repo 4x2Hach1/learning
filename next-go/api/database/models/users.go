@@ -64,6 +64,33 @@ func (s *Sql) NewUser(ctx context.Context, user *UserModel) error {
 	if err := tx.Commit(); err != nil {
 		return err
 	}
-
 	return nil
+}
+
+func (s *Sql) UpdateUser(ctx context.Context, user *UserModel) error {
+	tx := s.db.MustBegin()
+	if _, err := tx.NamedExec(
+		`UPDATE users SET name = :name, email = :email WHERE id = :id;`,
+		user,
+	); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Sql) LoginUser(ctx context.Context, email string, password string) (*server.User, error) {
+	user := UserModel{}
+	if err := s.db.Get(
+		&user, `SELECT id FROM users WHERE email = ? AND password =? Limit 1;`,
+		email, password,
+	); err != nil {
+		return nil, err
+	}
+
+	return converUser(&user), nil
 }

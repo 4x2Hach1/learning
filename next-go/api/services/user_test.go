@@ -142,3 +142,48 @@ func TestNewUser(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdateUser(t *testing.T) {
+	db, mock, err := services.ExportSetUpMockDB()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	logger := log.New(os.Stderr, "[test] ", log.Ltime)
+	srv := services.ExportNewUserService(db, logger)
+	ctx := services.ExportMakeToken(1)
+
+	tests := []struct {
+		title string
+		param server.UpdateUserPayload
+		setup func(sqlmock.Sqlmock) bool
+	}{
+		{
+			"update user ok",
+			server.UpdateUserPayload{
+				Token: "",
+				Name:  "user",
+				Email: "test@example.com",
+			},
+			func(s sqlmock.Sqlmock) bool {
+				s.ExpectBegin()
+				s.ExpectExec(regexp.QuoteMeta(`UPDATE users`)).WillReturnResult(
+					sqlmock.NewResult(1, 1),
+				)
+				s.ExpectCommit()
+
+				return true
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.title, func(t *testing.T) {
+			expected := tt.setup(mock)
+			res, err := srv.UpdateUser(ctx, &tt.param)
+
+			assert.Nil(t, err, "error must nil")
+			assert.Equal(t, expected, res, "res must equal")
+		})
+	}
+}

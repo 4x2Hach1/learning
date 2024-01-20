@@ -12,6 +12,7 @@ require (
 require (
 	github.com/AnatolyRugalev/goregen v0.1.0 // indirect
 	github.com/DATA-DOG/go-sqlmock v1.5.2
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dimfeld/httppath v0.0.0-20170720192232-ee938bf73598 // indirect
 	github.com/go-chi/chi/v5 v5.0.11 // indirect
 	github.com/go-sql-driver/mysql v1.7.1

@@ -1,1 +1,1 @@
-ALTER TABLE `users` ADD `password` VARCHAR(30) NOT NULL AFTER `email`;
+ALTER TABLE `users` ADD `password` VARCHAR(300) NOT NULL AFTER `email`;

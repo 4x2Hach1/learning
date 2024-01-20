@@ -23,7 +23,7 @@ func (s *userService) Users(ctx context.Context, p *server.UsersPayload) ([]*ser
 	return users, nil
 }
 
-func (s *userService) UserByID(ctx context.Context, p *server.UserByIDPayload) (res *server.User, err error) {
+func (s *userService) UserByID(ctx context.Context, p *server.UserByIDPayload) (*server.User, error) {
 	s.logger.Print("server.UserByID")
 	user, err := s.db.UserById(ctx, p.ID)
 	if err != nil {
@@ -33,12 +33,27 @@ func (s *userService) UserByID(ctx context.Context, p *server.UserByIDPayload) (
 	return user, err
 }
 
-func (s *userService) NewUser(ctx context.Context, p *server.NewUserPayload) (res bool, err error) {
+func (s *userService) NewUser(ctx context.Context, p *server.NewUserPayload) (bool, error) {
 	s.logger.Print("server.NewUser")
-	user := &models.UserModel{Name: p.Name, Email: p.Email, Password: p.Password}
+	user := &models.UserModel{
+		Name:     p.Name,
+		Email:    p.Email,
+		Password: encodePassword(p.Password),
+	}
 	if err := s.db.NewUser(ctx, user); err != nil {
 		return false, err
 	}
 
-	return true, err
+	return true, nil
+}
+
+func (s *userService) UpdateUser(ctx context.Context, p *server.UpdateUserPayload) (bool, error) {
+	s.logger.Print("server.UpdateUser")
+	token := getUserFromCtx(ctx)
+
+	user := &models.UserModel{ID: token.UserId, Name: p.Name, Email: p.Email}
+	if err := s.db.UpdateUser(ctx, user); err != nil {
+		return false, err
+	}
+	return true, nil
 }

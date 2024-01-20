@@ -1,8 +1,8 @@
 -- CreateTable
 CREATE TABLE `users` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(191) NULL,
-    `email` VARCHAR(191) NULL,
+    `name` VARCHAR(200) NULL,
+    `email` VARCHAR(200) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     UNIQUE INDEX `users_email_key`(`email`),
