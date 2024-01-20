@@ -86,7 +86,7 @@ func (s *Sql) UpdateUser(ctx context.Context, user *UserModel) error {
 func (s *Sql) LoginUser(ctx context.Context, email string, password string) (*server.User, error) {
 	user := UserModel{}
 	if err := s.db.Get(
-		&user, `SELECT id FROM users WHERE email = ? AND password =? Limit 1;`,
+		&user, `SELECT * FROM users WHERE email = ? AND password =? Limit 1;`,
 		email, password,
 	); err != nil {
 		return nil, err

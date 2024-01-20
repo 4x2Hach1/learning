@@ -10,18 +10,6 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func ExportSetUpMockDB() (*models.Sql, sqlmock.Sqlmock, error) {
-	driver, mock, err := sqlmock.New()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	db := sqlx.NewDb(driver, "sqlmock")
-	sql := models.NewSqlDB(db)
-
-	return sql, mock, nil
-}
-
 func ExportNewAuthService(db *models.Sql, logger *log.Logger) authService {
 	return authService{db, logger}
 }
@@ -32,6 +20,22 @@ func ExportNewHelloService(db *models.Sql, logger *log.Logger) helloService {
 
 func ExportNewUserService(db *models.Sql, logger *log.Logger) userService {
 	return userService{db, logger}
+}
+
+func ExportNewMemoryService(db *models.Sql, logger *log.Logger) memoryService {
+	return memoryService{db, logger}
+}
+
+func ExportSetUpMockDB() (*models.Sql, sqlmock.Sqlmock, error) {
+	driver, mock, err := sqlmock.New()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	db := sqlx.NewDb(driver, "sqlmock")
+	sql := models.NewSqlDB(db)
+
+	return sql, mock, nil
 }
 
 func ExportMakeToken(id int) context.Context {

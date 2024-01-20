@@ -44,6 +44,7 @@ func encodePassword(password string) string {
 func (s *authService) JWTAuth(ctx context.Context, token string, schema *security.JWTScheme) (context.Context, error) {
 	s.logger.Print("server.JWTAuth", token)
 
+	// トークンのパース
 	parseToken, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return ctx, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
@@ -60,27 +61,29 @@ func (s *authService) JWTAuth(ctx context.Context, token string, schema *securit
 		return ctx, errors.New("invalid token")
 	}
 
-	userId := int64(claims["user_id"].(float64))
+	// トークンの有効期限チェック
 	exp := int64(claims["exp"].(float64))
-	user := &UserJwtClaims{UserId: int(userId), Exp: int(exp)}
-
 	expTime := time.Unix(exp, 0)
 	nowTime := time.Now()
 	if nowTime.After(expTime) {
 		return ctx, errors.New("invalid token")
 	}
 
+	// トークンのctxへの埋込み
+	userId := int64(claims["user_id"].(float64))
+	user := &UserJwtClaims{UserId: int(userId), Exp: int(exp)}
 	authCtx := context.WithValue(ctx, UserJwtClaims{}, user)
 	return authCtx, nil
 }
 
-func (s *authService) Login(ctx context.Context, p *server.LoginPayload) (string, error) {
+func (s *authService) Login(ctx context.Context, p *server.LoginPayload) (*server.Loginauth, error) {
 	s.logger.Print("server.authService")
 	user, err := s.db.LoginUser(ctx, p.Email, encodePassword(p.Password))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
+	// ユーザーが存在する場合は、トークンの生成
 	claims := jwt.MapClaims{
 		"user_id": user.ID,
 		"exp":     time.Now().Add(time.Hour * 24).Unix(),
@@ -89,8 +92,8 @@ func (s *authService) Login(ctx context.Context, p *server.LoginPayload) (string
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	accessToken, err := token.SignedString([]byte(os.Getenv("TOKEN")))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return accessToken, nil
+	return &server.Loginauth{Token: &accessToken, User: user}, nil
 }

@@ -14,6 +14,7 @@ type serversrvc struct {
 	*authService
 	*helloService
 	*userService
+	*memoryService
 }
 
 // NewServer returns the server service implementation.
@@ -23,5 +24,6 @@ func NewServer(db *sqlx.DB, logger *log.Logger) server.Service {
 		&authService{sql, logger},
 		&helloService{sql, logger},
 		&userService{sql, logger},
+		&memoryService{sql, logger},
 	}
 }

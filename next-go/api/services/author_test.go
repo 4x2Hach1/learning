@@ -77,7 +77,7 @@ func TestLogin(t *testing.T) {
 				Password: "password",
 			},
 			func(s sqlmock.Sqlmock) error {
-				s.ExpectQuery(regexp.QuoteMeta(`SELECT id FROM users`)).WillReturnRows(
+				s.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM users`)).WillReturnRows(
 					s.NewRows(users_column).AddRow(1, "user", "test@example.com", "password", now, now),
 				)
 

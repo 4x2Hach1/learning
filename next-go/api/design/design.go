@@ -48,7 +48,7 @@ var _ = Service("server", func() {
 			Attribute("password", String, "Password")
 			Required("email", "password")
 		})
-		Result(String)
+		Result(LoginAuth)
 		HTTP(func() {
 			POST("/login")
 			Response(StatusOK)
@@ -120,6 +120,21 @@ var _ = Service("server", func() {
 			Response(StatusOK)
 		})
 	})
+
+	Method("memories", func() {
+		Security(JWTAuth, func() {
+			Scope("api:access")
+		})
+		Payload(func() {
+			Token("token", String, "JWT token auth")
+			Required("token")
+		})
+		Result(ArrayOf(Memory))
+		HTTP(func() {
+			GET("/memories")
+			Response(StatusOK)
+		})
+	})
 })
 
 var User = ResultType("User", func() {
@@ -127,5 +142,26 @@ var User = ResultType("User", func() {
 		Attribute("id", Int, "ID")
 		Attribute("name", String, "Name")
 		Attribute("email", String, "Email")
+	})
+})
+
+var LoginAuth = ResultType("LoginAuth", func() {
+	Attributes(func() {
+		Attribute("token", String, "Token")
+		Attribute("user", User, "User")
+	})
+})
+
+var Memory = ResultType("Memory", func() {
+	Attributes(func() {
+		Attribute("id", Int, "ID")
+		Attribute("users_id", Int, "UsersId")
+		Attribute("name", String, "Name")
+		Attribute("title", String, "Title")
+		Attribute("date", String, "Date", func() {
+			Format(FormatDate)
+		})
+		Attribute("location", String, "Location")
+		Attribute("detail", String, "Detail")
 	})
 })
