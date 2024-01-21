@@ -13,6 +13,12 @@ type userService struct {
 	logger *log.Logger
 }
 
+func (s *userService) AuthUser(ctx context.Context, p *server.AuthUserPayload) (*server.User, error) {
+	s.logger.Print("server.AuthUser")
+	token := getUserFromCtx(ctx)
+	return s.db.UserById(ctx, token.UserId)
+}
+
 func (s *userService) Users(ctx context.Context, p *server.UsersPayload) ([]*server.User, error) {
 	s.logger.Print("server.Users")
 	users, err := s.db.AllUsers(ctx)

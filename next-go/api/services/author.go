@@ -76,11 +76,11 @@ func (s *authService) JWTAuth(ctx context.Context, token string, schema *securit
 	return authCtx, nil
 }
 
-func (s *authService) Login(ctx context.Context, p *server.LoginPayload) (*server.Loginauth, error) {
+func (s *authService) Login(ctx context.Context, p *server.LoginPayload) (string, error) {
 	s.logger.Print("server.authService")
 	user, err := s.db.LoginUser(ctx, p.Email, encodePassword(p.Password))
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// ユーザーが存在する場合は、トークンの生成
@@ -92,8 +92,8 @@ func (s *authService) Login(ctx context.Context, p *server.LoginPayload) (*serve
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	accessToken, err := token.SignedString([]byte(os.Getenv("TOKEN")))
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return &server.Loginauth{Token: &accessToken, User: user}, nil
+	return accessToken, nil
 }

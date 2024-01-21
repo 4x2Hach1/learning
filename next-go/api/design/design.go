@@ -48,7 +48,7 @@ var _ = Service("server", func() {
 			Attribute("password", String, "Password")
 			Required("email", "password")
 		})
-		Result(LoginAuth)
+		Result(String)
 		HTTP(func() {
 			POST("/login")
 			Response(StatusOK)
@@ -56,6 +56,21 @@ var _ = Service("server", func() {
 	})
 
 	// user ////////////////////////////////////////////////////////
+	Method("authUser", func() {
+		Security(JWTAuth, func() {
+			Scope("api:access")
+		})
+		Payload(func() {
+			Token("token", String, "JWT token auth")
+			Required("token")
+		})
+		Result(User)
+		HTTP(func() {
+			GET("/user/auth")
+			Response(StatusOK)
+		})
+	})
+
 	Method("users", func() {
 		Security(JWTAuth, func() {
 			Scope("api:access")
@@ -215,13 +230,6 @@ var User = ResultType("User", func() {
 		Attribute("id", Int, "ID")
 		Attribute("name", String, "Name")
 		Attribute("email", String, "Email")
-	})
-})
-
-var LoginAuth = ResultType("LoginAuth", func() {
-	Attributes(func() {
-		Attribute("token", String, "Token")
-		Attribute("user", User, "User")
 	})
 })
 

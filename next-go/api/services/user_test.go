@@ -18,6 +18,44 @@ var (
 	users_column = []string{"id", "name", "email", "password", "created_at", "updated_at"}
 )
 
+func TestAuthUser(t *testing.T) {
+	db, mock, err := services.ExportSetUpMockDB()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	logger := log.New(os.Stderr, "[test] ", log.Ltime)
+	srv := services.ExportNewUserService(db, logger)
+	ctx := services.ExportMakeToken(1)
+	now := time.Now()
+
+	tests := []struct {
+		title string
+		param *server.AuthUserPayload
+		setup func(sqlmock.Sqlmock)
+	}{
+		{
+			"users ok",
+			&server.AuthUserPayload{Token: "token"},
+			func(s sqlmock.Sqlmock) {
+				s.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM users`)).WillReturnRows(
+					s.NewRows(users_column).AddRow(1, "user", "test@example.com", "password", now, now),
+				)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.title, func(t *testing.T) {
+			tt.setup(mock)
+			res, err := srv.AuthUser(ctx, tt.param)
+
+			assert.Nil(t, err, "error must nil")
+			assert.NotNil(t, res, "res not nil")
+		})
+	}
+}
+
 func TestUsers(t *testing.T) {
 	db, mock, err := services.ExportSetUpMockDB()
 	if err != nil {
