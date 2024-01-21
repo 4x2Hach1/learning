@@ -23,10 +23,10 @@ var _ = API("api", func() {
 var _ = Service("server", func() {
 	Description("Server Service for front.")
 	cors.Origin("/.*localhost.*/", func() {
-		cors.Headers("X-Shared-Secret")
+		cors.Headers("*")
 		cors.Methods("GET", "POST", "PATCH", "DELETE")
-		cors.Expose("X-Time", "X-Api-Version")
 		cors.MaxAge(100)
+		cors.Expose("*")
 		cors.Credentials()
 	})
 

@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/4x2Hach1/learning/next-go/api/gen/server"
@@ -19,7 +20,8 @@ type MemoryModel struct {
 }
 
 func converMemory(model *MemoryModel) *server.Memory {
-	date := model.Date.Format("2024-01-01")
+	date := model.Date.Format("2006-1-2")
+	fmt.Println(date)
 	return &server.Memory{
 		ID:       &model.ID,
 		UsersID:  &model.UsersId,
