@@ -47,3 +47,59 @@ func (s *Sql) AllMemories(ctx context.Context) ([]*server.Memory, error) {
 
 	return converMemories(memories), nil
 }
+
+func (s *Sql) MemoryByID(ctx context.Context, id int) (*server.Memory, error) {
+	memory := MemoryModel{}
+	if err := s.db.Get(&memory, `SELECT * FROM memories WHERE id = ?`, id); err != nil {
+		return nil, err
+	}
+	return converMemory(&memory), nil
+}
+
+func (s *Sql) NewMemory(ctx context.Context, memory *MemoryModel) error {
+	tx := s.db.MustBegin()
+	if _, err := tx.NamedExec(
+		`INSERT INTO memories (users_id, title, date, location, detail)
+		VALUES (:users_id, :title, :date, :location, :detail);`,
+		memory,
+	); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Sql) DeleteMemory(ctx context.Context, id int, userId int) error {
+	tx := s.db.MustBegin()
+	if _, err := tx.Exec(
+		`DELETE FROM memories WHERE id = ? AND users_id = ?`,
+		id, userId,
+	); err != nil {
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Sql) UpdateMemory(ctx context.Context, memory *MemoryModel) error {
+	tx := s.db.MustBegin()
+	if _, err := tx.NamedExec(
+		`UPDATE memories SET title = :title, date = :date, location = :location, detail = :detail 
+		WHERE id = :id AND users_id = :users_id;`,
+		memory,
+	); err != nil {
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+	return nil
+}

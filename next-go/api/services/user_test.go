@@ -111,7 +111,6 @@ func TestNewUser(t *testing.T) {
 		{
 			"new user ok",
 			&server.NewUserPayload{
-				Token:    "",
 				Name:     "user",
 				Email:    "test@example.com",
 				Password: "password",

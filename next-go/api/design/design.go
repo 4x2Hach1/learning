@@ -55,6 +55,7 @@ var _ = Service("server", func() {
 		})
 	})
 
+	// user ////////////////////////////////////////////////////////
 	Method("users", func() {
 		Security(JWTAuth, func() {
 			Scope("api:access")
@@ -87,15 +88,11 @@ var _ = Service("server", func() {
 	})
 
 	Method("newUser", func() {
-		Security(JWTAuth, func() {
-			Scope("api:access")
-		})
 		Payload(func() {
-			Token("token", String, "JWT token auth")
 			Attribute("name", String, "Name")
 			Attribute("email", String, "Email")
 			Attribute("password", String, "Password")
-			Required("token", "name", "email", "password")
+			Required("name", "email", "password")
 		})
 		Result(Boolean)
 		HTTP(func() {
@@ -121,6 +118,7 @@ var _ = Service("server", func() {
 		})
 	})
 
+	// memory ////////////////////////////////////////////////////////
 	Method("memories", func() {
 		Security(JWTAuth, func() {
 			Scope("api:access")
@@ -132,6 +130,81 @@ var _ = Service("server", func() {
 		Result(ArrayOf(Memory))
 		HTTP(func() {
 			GET("/memories")
+			Response(StatusOK)
+		})
+	})
+
+	Method("memoryById", func() {
+		Security(JWTAuth, func() {
+			Scope("api:access")
+		})
+		Payload(func() {
+			Token("token", String, "JWT token auth")
+			Attribute("id", Int, "ID")
+			Required("token", "id")
+		})
+		Result(Memory)
+		HTTP(func() {
+			GET("/memory/{id}")
+			Response(StatusOK)
+		})
+	})
+
+	Method("newMemory", func() {
+		Security(JWTAuth, func() {
+			Scope("api:access")
+		})
+		Payload(func() {
+			Token("token", String, "JWT token auth")
+			Attribute("title", String, "Title")
+			Attribute("date", String, "Date", func() {
+				Format(FormatDate)
+			})
+			Attribute("location", String, "Location")
+			Attribute("detail", String, "Detail")
+			Required("token", "title", "date", "location", "detail")
+		})
+		Result(Boolean)
+		HTTP(func() {
+			POST("/memory")
+			Response(StatusOK)
+		})
+	})
+
+	Method("deleteMemory", func() {
+		Security(JWTAuth, func() {
+			Scope("api:access")
+		})
+		Payload(func() {
+			Token("token", String, "JWT token auth")
+			Attribute("id", Int, "ID")
+			Required("token", "id")
+		})
+		Result(Boolean)
+		HTTP(func() {
+			DELETE("/memory/{id}")
+			Response(StatusOK)
+		})
+	})
+
+	Method("updateMemory", func() {
+		Security(JWTAuth, func() {
+			Scope("api:access")
+		})
+		Payload(func() {
+			Token("token", String, "JWT token auth")
+			Attribute("id", Int, "ID")
+			Attribute("title", String, "Title")
+			Attribute("date", String, "Date", func() {
+				Format(FormatDate)
+			})
+			Attribute("location", String, "Location")
+			Attribute("detail", String, "Detail")
+			Required("token", "id", "title", "date", "location", "detail")
+		})
+		Result(Boolean)
+		HTTP(func() {
+			PATCH("/memory/{id}")
 			Response(StatusOK)
 		})
 	})
@@ -156,7 +229,6 @@ var Memory = ResultType("Memory", func() {
 	Attributes(func() {
 		Attribute("id", Int, "ID")
 		Attribute("users_id", Int, "UsersId")
-		Attribute("name", String, "Name")
 		Attribute("title", String, "Title")
 		Attribute("date", String, "Date", func() {
 			Format(FormatDate)

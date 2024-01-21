@@ -56,3 +56,184 @@ func TestMemories(t *testing.T) {
 		})
 	}
 }
+
+func TestMemoryByID(t *testing.T) {
+	db, mock, err := services.ExportSetUpMockDB()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	logger := log.New(os.Stderr, "[test] ", log.Ltime)
+	srv := services.ExportNewMemoryService(db, logger)
+	now := time.Now()
+
+	tests := []struct {
+		title string
+		param *server.MemoryByIDPayload
+		setup func(sqlmock.Sqlmock)
+	}{
+		{
+			"memory ok",
+			&server.MemoryByIDPayload{Token: "", ID: 1},
+			func(s sqlmock.Sqlmock) {
+				s.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM memories`)).WillReturnRows(
+					s.NewRows(memories_column).AddRow(1, 1, "Title", now, "https://maps.app.goo.gl/KWjr4KurSaRUVpC79", "Detail", now, now),
+				)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.title, func(t *testing.T) {
+			tt.setup(mock)
+			res, err := srv.MemoryByID(context.Background(), tt.param)
+
+			assert.Nil(t, err, "error must nil")
+			assert.NotNil(t, res, "res no nil")
+		})
+	}
+}
+
+func TestNewMemory(t *testing.T) {
+	db, mock, err := services.ExportSetUpMockDB()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	logger := log.New(os.Stderr, "[test] ", log.Ltime)
+	srv := services.ExportNewMemoryService(db, logger)
+	ctx := services.ExportMakeToken(1)
+	now := time.Now()
+
+	tests := []struct {
+		title string
+		param *server.NewMemoryPayload
+		setup func(sqlmock.Sqlmock) bool
+	}{
+		{
+			"insert memory ok",
+			&server.NewMemoryPayload{
+				Token: "", Title: "Title", Date: "2024-01-01",
+				Location: "https://maps.app.goo.gl/KWjr4KurSaRUVpC79", Detail: "Detail",
+			},
+			func(s sqlmock.Sqlmock) bool {
+				s.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM users`)).WillReturnRows(
+					s.NewRows(users_column).AddRow(1, "user", "test@example.com", "password", now, now),
+				)
+
+				s.ExpectBegin()
+				s.ExpectExec(regexp.QuoteMeta(`INSERT INTO memories`)).WillReturnResult(
+					sqlmock.NewResult(1, 1),
+				)
+				s.ExpectCommit()
+
+				return true
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.title, func(t *testing.T) {
+			expected := tt.setup(mock)
+			res, err := srv.NewMemory(ctx, tt.param)
+
+			assert.Nil(t, err, "error must nil")
+			assert.Equal(t, expected, res, "res must equal")
+		})
+	}
+}
+
+func TestDeleteMemory(t *testing.T) {
+	db, mock, err := services.ExportSetUpMockDB()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	logger := log.New(os.Stderr, "[test] ", log.Ltime)
+	srv := services.ExportNewMemoryService(db, logger)
+	ctx := services.ExportMakeToken(1)
+	now := time.Now()
+
+	tests := []struct {
+		title string
+		param *server.DeleteMemoryPayload
+		setup func(sqlmock.Sqlmock) bool
+	}{
+		{
+			"delete memory ok",
+			&server.DeleteMemoryPayload{Token: "", ID: 1},
+			func(s sqlmock.Sqlmock) bool {
+				s.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM users`)).WillReturnRows(
+					s.NewRows(users_column).AddRow(1, "user", "test@example.com", "password", now, now),
+				)
+
+				s.ExpectBegin()
+				s.ExpectExec(regexp.QuoteMeta(`DELETE FROM memories`)).WillReturnResult(
+					sqlmock.NewResult(1, 1),
+				)
+				s.ExpectCommit()
+
+				return true
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.title, func(t *testing.T) {
+			expected := tt.setup(mock)
+			res, err := srv.DeleteMemory(ctx, tt.param)
+
+			assert.Nil(t, err, "error must nil")
+			assert.Equal(t, expected, res, "res must equal")
+		})
+	}
+}
+
+func TestUpdateMemory(t *testing.T) {
+	db, mock, err := services.ExportSetUpMockDB()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	logger := log.New(os.Stderr, "[test] ", log.Ltime)
+	srv := services.ExportNewMemoryService(db, logger)
+	ctx := services.ExportMakeToken(1)
+	now := time.Now()
+
+	tests := []struct {
+		title string
+		param *server.UpdateMemoryPayload
+		setup func(sqlmock.Sqlmock) bool
+	}{
+		{
+			"delete memory ok",
+			&server.UpdateMemoryPayload{
+				Token: "", ID: 1, Title: "Title", Date: "2024-01-01",
+				Location: "https://maps.app.goo.gl/KWjr4KurSaRUVpC79", Detail: "Detail",
+			},
+			func(s sqlmock.Sqlmock) bool {
+				s.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM users`)).WillReturnRows(
+					s.NewRows(users_column).AddRow(1, "user", "test@example.com", "password", now, now),
+				)
+
+				s.ExpectBegin()
+				s.ExpectExec(regexp.QuoteMeta(`UPDATE memories`)).WillReturnResult(
+					sqlmock.NewResult(1, 1),
+				)
+				s.ExpectCommit()
+
+				return true
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.title, func(t *testing.T) {
+			expected := tt.setup(mock)
+			res, err := srv.UpdateMemory(ctx, tt.param)
+
+			assert.Nil(t, err, "error must nil")
+			assert.Equal(t, expected, res, "res must equal")
+		})
+	}
+}
