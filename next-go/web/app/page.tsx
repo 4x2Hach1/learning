@@ -8,8 +8,8 @@ import React, { useEffect, useState } from "react";
 export default function Home() {
   const [islogin, setIslogin] = useState<boolean>(true);
   const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("user@example.com");
-  const [password, setPassword] = useState<string>("password");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [err, setErr] = useState<Error>();
   const [toTop, setToTop] = useState(false);
   const router = useRouter();

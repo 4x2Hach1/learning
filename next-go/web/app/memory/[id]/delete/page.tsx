@@ -11,6 +11,7 @@ export default function Page() {
   const params = useParams<{ id: string }>();
   const [user, setUser] = useState<ApiUser>();
   const [memory, setMemory] = useState<ApiMemory>();
+  const [err, setErr] = useState<Error>();
 
   useEffect(() => {
     (async () => {
@@ -33,6 +34,10 @@ export default function Page() {
 
           const body = await res.json();
           const resMemory = ApiMemorySchema.parse(body);
+          if (resUser.id !== resMemory.users_id) {
+            route.push(`/memory/${params.id}`);
+          }
+
           setMemory(resMemory);
         } catch (error) {
           console.log(error);
@@ -61,10 +66,11 @@ export default function Page() {
         </div>
         {memory?.users_id === user?.id && (
           <p className="my-8 flex justify-between">
-            <a href={`/memory`}>戻る</a>
-            <a href={`/memory/${params.id}/edit`}>編集</a>
+            <a href={`/memory/${params.id}`}>戻る</a>
           </p>
         )}
+        <p>投稿削除</p>
+        <p>{err?.message}</p>
         <table>
           <thead>
             <tr>
@@ -85,11 +91,37 @@ export default function Page() {
             </tr>
           </tbody>
         </table>
-        {memory?.users_id === user?.id && (
-          <p className="my-8 flex justify-between">
-            <a href={`/memory/${params.id}/delete`}>削除</a>
-          </p>
-        )}
+        <p className="mt-8">
+          削除しますか?
+          <button
+            className="ml-4"
+            onClick={async () => {
+              const token = localStorage.getItem("jwt");
+              if (!token) {
+                localStorage.removeItem("jwt");
+                route.push("/");
+              } else {
+                try {
+                  await fetch(API_SERVER + `/memory/${params.id}`, {
+                    method: "DELETE",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: token,
+                    },
+                  });
+
+                  route.push("/memory");
+                } catch (error) {
+                  if (error instanceof Error) {
+                    setErr(error);
+                  }
+                }
+              }
+            }}
+          >
+            実行
+          </button>
+        </p>
       </div>
     </main>
   );
