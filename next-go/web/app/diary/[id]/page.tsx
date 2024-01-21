@@ -2,14 +2,15 @@
 
 import { API_SERVER } from "@/utils/const";
 import { authUser } from "@/utils/functions";
-import { ApiMemories, ApiMemoriesSchema, ApiUser } from "@/utils/types";
-import { useRouter } from "next/navigation";
+import { ApiMemory, ApiMemorySchema, ApiUser } from "@/utils/types";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
   const route = useRouter();
+  const params = useParams<{ id: string }>();
   const [user, setUser] = useState<ApiUser>();
-  const [memories, setMemories] = useState<ApiMemories>();
+  const [memory, setMemory] = useState<ApiMemory>();
 
   useEffect(() => {
     (async () => {
@@ -22,7 +23,7 @@ export default function Page() {
           const resUser = await authUser(token);
           setUser(resUser);
 
-          const res = await fetch(API_SERVER + "/memories", {
+          const res = await fetch(API_SERVER + `/memory/${params.id}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -31,9 +32,8 @@ export default function Page() {
           });
 
           const body = await res.json();
-          console.log(body);
-          const resMemories = ApiMemoriesSchema.parse(body);
-          setMemories(resMemories);
+          const resMemory = ApiMemorySchema.parse(body);
+          setMemory(resMemory);
         } catch (error) {
           console.log(error);
           route.push("/");
@@ -59,9 +59,6 @@ export default function Page() {
             ログアウト
           </button>
         </div>
-        <p className="my-8">
-          <a href="/diary/new">投稿</a>
-        </p>
         <table>
           <thead>
             <tr>
@@ -73,17 +70,13 @@ export default function Page() {
             </tr>
           </thead>
           <tbody>
-            {memories?.map((memory, index) => (
-              <tr key={index}>
-                <td>
-                  <a href={`/diary/${memory.id}`}>{memory.id}</a>
-                </td>
-                <td>{memory.title}</td>
-                <td>{memory.date}</td>
-                <td>{memory.location}</td>
-                <td>{memory.detail}</td>
-              </tr>
-            ))}
+            <tr>
+              <td>{memory?.id}</td>
+              <td>{memory?.title}</td>
+              <td>{memory?.date}</td>
+              <td>{memory?.location}</td>
+              <td>{memory?.detail}</td>
+            </tr>
           </tbody>
         </table>
       </div>
