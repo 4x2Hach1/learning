@@ -46,7 +46,7 @@ export default function Page() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div>
-        <p>diary</p>
+        <p>memory</p>
         <div>
           {user?.name ?? "---"}さん
           <button
@@ -60,7 +60,7 @@ export default function Page() {
           </button>
         </div>
         <p className="my-8">
-          <a href="/diary/new">投稿</a>
+          <a href="/memory/new">投稿</a>
         </p>
         <table>
           <thead>
@@ -76,7 +76,7 @@ export default function Page() {
             {memories?.map((memory, index) => (
               <tr key={index}>
                 <td>
-                  <a href={`/diary/${memory.id}`}>{memory.id}</a>
+                  <a href={`/memory/${memory.id}`}>{memory.id}</a>
                 </td>
                 <td>{memory.title}</td>
                 <td>{memory.date}</td>

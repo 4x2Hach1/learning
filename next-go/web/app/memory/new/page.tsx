@@ -4,7 +4,7 @@ import { API_SERVER } from "@/utils/const";
 import { authUser } from "@/utils/functions";
 import { ApiUser } from "@/utils/types";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Page() {
   const route = useRouter();
@@ -37,7 +37,7 @@ export default function Page() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div>
-        <p>diary</p>
+        <p>memory</p>
         <div>
           {user?.name ?? "---"}さん
           <button
@@ -50,6 +50,9 @@ export default function Page() {
             ログアウト
           </button>
         </div>
+        <p className="my-8 flex justify-between">
+          <a href={`/memory`}>戻る</a>
+        </p>
         <div>
           <p>新規投稿</p>
           <p>{err?.message}</p>
@@ -115,7 +118,7 @@ export default function Page() {
                   }),
                 });
 
-                route.push("/diary");
+                route.push("/memory");
               } catch (error) {
                 if (error instanceof Error) {
                   setErr(error);

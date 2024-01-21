@@ -16,7 +16,7 @@ export default function Home() {
 
   useEffect(() => {
     if (toTop) {
-      redirect("/diary");
+      redirect("/memory");
     }
   }, [toTop]);
 

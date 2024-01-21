@@ -46,7 +46,7 @@ export default function Page() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div>
-        <p>diary</p>
+        <p>memory</p>
         <div>
           {user?.name ?? "---"}さん
           <button
@@ -59,6 +59,12 @@ export default function Page() {
             ログアウト
           </button>
         </div>
+        {memory?.users_id === user?.id && (
+          <p className="my-8 flex justify-between">
+            <a href={`/memory`}>戻る</a>
+            <a href={`/memory/${params.id}/edit`}>編集</a>
+          </p>
+        )}
         <table>
           <thead>
             <tr>
