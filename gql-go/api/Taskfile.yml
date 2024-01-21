@@ -1,0 +1,27 @@
+version: "3"
+
+dotenv: [".env"]
+
+tasks:
+  default:
+    cmds:
+      - task --list-all
+  init:
+    cmds:
+      - curl -OL https://github.com/k0kubun/sqldef/releases/download/v0.16.15/mysqldef_linux_amd64.tar.gz
+      - tar xf mysqldef_linux_amd64.tar.gz -C /usr/local/bin/
+      - rm mysqldef_linux_amd64.tar.gz
+      - go install github.com/volatiletech/sqlboiler/v4@latest
+      # - go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-mysql
+      - go get -u github.com/99designs/gqlgen
+      - go install github.com/99designs/gqlgen
+      - go install github.com/cosmtrek/air@latest
+  run:
+    cmds:
+      - air
+  test:
+    cmds:
+      - go test -cover -v -bench . -benchmem ./...
+  gen:
+    cmds:
+      - gqlgen generate

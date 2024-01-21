@@ -1,0 +1,13 @@
+pkgname="db"
+output="db"
+wipe=true
+add-global-variants=false
+no-tests=true
+
+[mysql]
+    dbname  = "gql"
+    host    = "gql-go-db"
+    port    = 3306
+    user    = "root"
+    pass    = "mysql"
+    sslmode = "false"
