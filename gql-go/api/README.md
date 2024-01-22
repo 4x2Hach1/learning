@@ -1,12 +1,12 @@
 # install
 edit `.env`
 ```bash
-make init
+task init
 go mod tidy
-make db-up
+task db-migrate -- migrations/{sql-file-name}.sql
 ```
 
 # Getting Started
 ```bash
-make run
+task run
 ```
