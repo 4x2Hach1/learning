@@ -124,7 +124,7 @@ export default function Page() {
               route.push("/");
             } else {
               try {
-                await fetch(API_SERVER + `/memory/${params.id}`, {
+                const res = await fetch(API_SERVER + `/memory/${params.id}`, {
                   method: "PATCH",
                   headers: {
                     "Content-Type": "application/json",
@@ -138,7 +138,12 @@ export default function Page() {
                   }),
                 });
 
-                route.push(`/memory/${params.id}`);
+                if (res.ok) {
+                  route.push(`/memory/${params.id}`);
+                } else {
+                  const body = await res.json();
+                  throw new Error(body.message);
+                }
               } catch (error) {
                 if (error instanceof Error) {
                   setErr(error);
@@ -147,7 +152,7 @@ export default function Page() {
             }
           }}
         >
-          編集
+          保存
         </button>
       </div>
     </main>

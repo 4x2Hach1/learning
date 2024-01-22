@@ -42,7 +42,7 @@ func main() {
 		DSN = fmt.Sprintf(
 			"%s:%s@tcp(%s:%s)/%s?parseTime=true&autocommit=0&sql_mode=%%27TRADITIONAL,NO_AUTO_VALUE_ON_ZERO,ONLY_FULL_GROUP_BY%%27",
 			os.Getenv("DB_USER"), os.Getenv("DB_PASS"),
-			os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_TABLE"),
+			os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_NAME"),
 		)
 	)
 	{

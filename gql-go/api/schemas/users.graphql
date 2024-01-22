@@ -1,9 +1,10 @@
 extend type Query {
-  user(id: Int!): User
+  user(id: Int!): User @isUserAuth
 }
 
 extend type Mutation {
   newUser(input: NewUser!): Boolean!
+  updateUser(input: UpdateUser!): Boolean! @isUserAuth
 }
 
 type User {
@@ -15,4 +16,12 @@ type User {
 input NewUser {
   name: String!
   email: String!
+  password: String!
+}
+
+input UpdateUser {
+  id: Int!
+  name: String!
+  email: String!
+  password: String!
 }

@@ -104,7 +104,7 @@ export default function Page() {
               route.push("/");
             } else {
               try {
-                await fetch(API_SERVER + "/memory", {
+                const res = await fetch(API_SERVER + "/memory", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
@@ -118,7 +118,12 @@ export default function Page() {
                   }),
                 });
 
-                route.push("/memory");
+                if (res.ok) {
+                  route.push("/memory");
+                } else {
+                  const body = await res.json();
+                  throw new Error(body.message);
+                }
               } catch (error) {
                 if (error instanceof Error) {
                   setErr(error);

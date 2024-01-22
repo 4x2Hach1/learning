@@ -44,7 +44,8 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Mutation struct {
-		NewUser func(childComplexity int, input models.NewUser) int
+		NewUser    func(childComplexity int, input models.NewUser) int
+		UpdateUser func(childComplexity int, input models.UpdateUser) int
 	}
 
 	Query struct {
@@ -89,6 +90,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.NewUser(childComplexity, args["input"].(models.NewUser)), true
 
+	case "Mutation.updateUser":
+		if e.complexity.Mutation.UpdateUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateUser(childComplexity, args["input"].(models.UpdateUser)), true
+
 	case "Query.user":
 		if e.complexity.Query.User == nil {
 			break
@@ -131,6 +144,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputNewUser,
+		ec.unmarshalInputUpdateUser,
 	)
 	first := true
 
@@ -243,11 +257,12 @@ directive @validation(
 directive @isUserAuth on FIELD_DEFINITION
 `, BuiltIn: false},
 	{Name: "../schemas/users.graphql", Input: `extend type Query {
-  user(id: Int!): User
+  user(id: Int!): User @isUserAuth
 }
 
 extend type Mutation {
   newUser(input: NewUser!): Boolean!
+  updateUser(input: UpdateUser!): Boolean! @isUserAuth
 }
 
 type User {
@@ -259,6 +274,14 @@ type User {
 input NewUser {
   name: String!
   email: String!
+  password: String!
+}
+
+input UpdateUser {
+  id: Int!
+  name: String!
+  email: String!
+  password: String!
 }
 `, BuiltIn: false},
 }

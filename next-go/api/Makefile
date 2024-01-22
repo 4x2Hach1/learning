@@ -13,17 +13,17 @@ init: ## 環境構築
 	go install -tags mysql github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
 db-up: ## migrate
-	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_TABLE}?multiStatements=true" -path=database/migrations/ up
+	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_NAME}?multiStatements=true" -path=database/migrations/ up
 db-down: ## migrate
-	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_TABLE}?multiStatements=true" -path=database/migrations/ down
+	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_NAME}?multiStatements=true" -path=database/migrations/ down
 db-down-%: ## migrate
-	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_TABLE}?multiStatements=true" -path=database/migrations/ down ${@:db-down-%=%}
+	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_NAME}?multiStatements=true" -path=database/migrations/ down ${@:db-down-%=%}
 db-ver: ## migrate
-	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_TABLE}?multiStatements=true" -path=database/migrations/ version
+	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_NAME}?multiStatements=true" -path=database/migrations/ version
 db-create-%: ## migrate
 	migrate create -ext sql -dir database/migrations -seq ${@:db-create-%=%}
 db-force-%: ## migrate
-	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_TABLE}?multiStatements=true" -path=database/migrations/ force ${@:db-force-%=%}
+	export $$(cat ./.env | grep -v ^# | xargs); migrate -database="$${DB_DRIVER}://$${DB_USER}:$${DB_PASS}@tcp($${DB_HOST}:$${DB_PORT})/$${DB_NAME}?multiStatements=true" -path=database/migrations/ force ${@:db-force-%=%}
 
 gen: ## designからの生成
 	goa gen github.com/4x2Hach1/learning/next-go/api/design

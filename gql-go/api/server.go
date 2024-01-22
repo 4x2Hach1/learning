@@ -70,7 +70,7 @@ func main() {
 	}
 
 	// graphql
-	http.Handle("/gql",
+	http.Handle("/query",
 		http.TimeoutHandler(
 			cors.Handler(directives.AuthAndLoggerMiddleware(server)),
 			90*time.Second,

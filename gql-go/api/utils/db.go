@@ -10,7 +10,7 @@ import (
 
 func SetupDB() (*sql.DB, error) {
 	uri := fmt.Sprintf(
-		"%s:%s@tcp(%s:%d)/%s?parseTime=true",
+		"%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		os.Getenv("DB_USER"), os.Getenv("DB_PASS"), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_NAME"),
 	)
 

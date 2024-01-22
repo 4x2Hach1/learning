@@ -12,16 +12,26 @@ tasks:
       - tar xf mysqldef_linux_amd64.tar.gz -C /usr/local/bin/
       - rm mysqldef_linux_amd64.tar.gz
       - go install github.com/volatiletech/sqlboiler/v4@latest
-      # - go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-mysql
+      - go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-mysql@latest
       - go get -u github.com/99designs/gqlgen
       - go install github.com/99designs/gqlgen
       - go install github.com/cosmtrek/air@latest
+      - go install github.com/Code-Hex/gqldoc/cmd/gqldoc@latest
   run:
     cmds:
       - air
   test:
     cmds:
       - go test -cover -v -bench . -benchmem ./...
+  db-migrate:
+    cmds:
+      - mysqldef -u$DB_USER -p$DB_PASS -h$DB_HOST -P$DB_PORT $DB_NAME --file={{ .CLI_ARGS }}
+  db-inport:
+    cmds:
+      - sqlboiler mysql
   gen:
     cmds:
       - gqlgen generate
+  doc:
+    cmds:
+      - gqldoc -s "./schemas/*.graphql" -o ./docs

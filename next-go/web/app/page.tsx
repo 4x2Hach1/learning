@@ -1,11 +1,13 @@
 "use client";
 
 import { API_SERVER } from "@/utils/const";
+import { authUser } from "@/utils/functions";
 import { ApiLoginSchema } from "@/utils/types";
 import { useRouter, redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function Home() {
+  const route = useRouter();
   const [islogin, setIslogin] = useState<boolean>(true);
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -13,6 +15,25 @@ export default function Home() {
   const [err, setErr] = useState<Error>();
   const [toTop, setToTop] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    (async () => {
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        localStorage.removeItem("jwt");
+      } else {
+        try {
+          const user = await authUser(token);
+          if (!!user) {
+            route.push("/memory");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (toTop) {
@@ -128,7 +149,7 @@ export default function Home() {
                 <button
                   onClick={async () => {
                     try {
-                      await fetch(API_SERVER + "/user", {
+                      const res = await fetch(API_SERVER + "/user", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -138,12 +159,17 @@ export default function Home() {
                         }),
                       });
 
-                      router.refresh();
-                      setName("");
-                      setEmail("");
-                      setPassword("");
-                      setErr(undefined);
-                      setIslogin(true);
+                      if (res.ok) {
+                        router.refresh();
+                        setName("");
+                        setEmail("");
+                        setPassword("");
+                        setErr(undefined);
+                        setIslogin(true);
+                      } else {
+                        const body = await res.json();
+                        throw new Error(body.message);
+                      }
                     } catch (error) {
                       if (error instanceof Error) {
                         setErr(error);

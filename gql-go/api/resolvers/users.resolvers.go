@@ -15,6 +15,11 @@ func (r *mutationResolver) NewUser(ctx context.Context, input models.NewUser) (b
 	return r.Srv.NewUser(ctx, input)
 }
 
+// UpdateUser is the resolver for the updateUser field.
+func (r *mutationResolver) UpdateUser(ctx context.Context, input models.UpdateUser) (bool, error) {
+	return r.Srv.UpdateUser(ctx, input)
+}
+
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id int) (*models.User, error) {
 	return r.Srv.User(ctx, id)
