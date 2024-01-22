@@ -24,6 +24,42 @@
     <td><strong>name</strong> (<a href="scalars.md#string">String!</a>)</td>
     <td></td>
   </tr>
+  <tr>
+    <td><strong>password</strong> (<a href="scalars.md#string">String!</a>)</td>
+    <td></td>
+  </tr>
+</table>
+
+---
+
+### UpdateUser
+
+
+
+
+#### Input fields
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><strong>email</strong> (<a href="scalars.md#string">String!</a>)</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><strong>id</strong> (<a href="scalars.md#int">Int!</a>)</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><strong>name</strong> (<a href="scalars.md#string">String!</a>)</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><strong>password</strong> (<a href="scalars.md#string">String!</a>)</td>
+    <td></td>
+  </tr>
 </table>
 
 ---

@@ -14,3 +14,14 @@
  
 
 ---
+
+### updateUser
+
+
+
+#### Input fields
+
+- input ([UpdateUser!](input_objects.md#updateuser))
+ 
+
+---
