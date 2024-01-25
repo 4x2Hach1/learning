@@ -20,9 +20,10 @@ func TestJWTAuth(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cache, _ := services.ExportSetUpCache()
 
 	logger := log.New(os.Stderr, "[test] ", log.Ltime)
-	srv := services.ExportNewAuthService(db, logger)
+	srv := services.ExportNewAuthService(db, cache, logger)
 
 	tests := []struct {
 		title string
@@ -62,7 +63,8 @@ func TestLogin(t *testing.T) {
 	}
 
 	logger := log.New(os.Stderr, "[test] ", log.Ltime)
-	srv := services.ExportNewAuthService(db, logger)
+	cache, _ := services.ExportSetUpCache()
+	srv := services.ExportNewAuthService(db, cache, logger)
 	now := time.Now()
 
 	tests := []struct {

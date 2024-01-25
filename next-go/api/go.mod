@@ -2,10 +2,19 @@ module github.com/4x2Hach1/learning/next-go/api
 
 go 1.21.4
 
-require goa.design/goa/v3 v3.14.6
+require (
+	github.com/go-redis/redismock/v9 v9.2.0
+	github.com/redis/go-redis/v9 v9.2.0
+	goa.design/goa/v3 v3.14.6
+)
 
 require (
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+	github.com/google/go-cmp v0.6.0 // indirect
+	github.com/kr/text v0.2.0 // indirect
+	github.com/onsi/gomega v1.28.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 )
 

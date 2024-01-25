@@ -10,6 +10,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/4x2Hach1/learning/next-go/api/cache"
 	"github.com/4x2Hach1/learning/next-go/api/database/models"
 	"github.com/4x2Hach1/learning/next-go/api/gen/server"
 	"github.com/dgrijalva/jwt-go"
@@ -18,6 +19,7 @@ import (
 
 type authService struct {
 	db     *models.Sql
+	cache  *cache.Cache
 	logger *log.Logger
 }
 

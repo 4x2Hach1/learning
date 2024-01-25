@@ -5,25 +5,27 @@ import (
 	"log"
 	"time"
 
+	"github.com/4x2Hach1/learning/next-go/api/cache"
 	"github.com/4x2Hach1/learning/next-go/api/database/models"
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/go-redis/redismock/v9"
 	"github.com/jmoiron/sqlx"
 )
 
-func ExportNewAuthService(db *models.Sql, logger *log.Logger) authService {
-	return authService{db, logger}
+func ExportNewAuthService(db *models.Sql, cache *cache.Cache, logger *log.Logger) authService {
+	return authService{db, cache, logger}
 }
 
-func ExportNewHelloService(db *models.Sql, logger *log.Logger) helloService {
-	return helloService{db, logger}
+func ExportNewHelloService(db *models.Sql, cache *cache.Cache, logger *log.Logger) helloService {
+	return helloService{db, cache, logger}
 }
 
-func ExportNewUserService(db *models.Sql, logger *log.Logger) userService {
-	return userService{db, logger}
+func ExportNewUserService(db *models.Sql, cache *cache.Cache, logger *log.Logger) userService {
+	return userService{db, cache, logger}
 }
 
-func ExportNewMemoryService(db *models.Sql, logger *log.Logger) memoryService {
-	return memoryService{db, logger}
+func ExportNewMemoryService(db *models.Sql, cache *cache.Cache, logger *log.Logger) memoryService {
+	return memoryService{db, cache, logger}
 }
 
 func ExportSetUpMockDB() (*models.Sql, sqlmock.Sqlmock, error) {
@@ -36,6 +38,12 @@ func ExportSetUpMockDB() (*models.Sql, sqlmock.Sqlmock, error) {
 	sql := models.NewSqlDB(db)
 
 	return sql, mock, nil
+}
+
+func ExportSetUpCache() (*cache.Cache, redismock.ClientMock) {
+	rds, mock := redismock.NewClientMock()
+	c := cache.NewCache(rds)
+	return c, mock
 }
 
 func ExportMakeToken(id int) context.Context {

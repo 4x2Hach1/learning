@@ -23,9 +23,10 @@ func TestMemories(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cache, _ := services.ExportSetUpCache()
 
 	logger := log.New(os.Stderr, "[test] ", log.Ltime)
-	srv := services.ExportNewMemoryService(db, logger)
+	srv := services.ExportNewMemoryService(db, cache, logger)
 	now := time.Now()
 
 	tests := []struct {
@@ -62,9 +63,10 @@ func TestMemoryByID(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cache, _ := services.ExportSetUpCache()
 
 	logger := log.New(os.Stderr, "[test] ", log.Ltime)
-	srv := services.ExportNewMemoryService(db, logger)
+	srv := services.ExportNewMemoryService(db, cache, logger)
 	now := time.Now()
 
 	tests := []struct {
@@ -99,9 +101,10 @@ func TestNewMemory(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cache, _ := services.ExportSetUpCache()
 
 	logger := log.New(os.Stderr, "[test] ", log.Ltime)
-	srv := services.ExportNewMemoryService(db, logger)
+	srv := services.ExportNewMemoryService(db, cache, logger)
 	ctx := services.ExportMakeToken(1)
 	now := time.Now()
 
@@ -148,9 +151,10 @@ func TestDeleteMemory(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cache, _ := services.ExportSetUpCache()
 
 	logger := log.New(os.Stderr, "[test] ", log.Ltime)
-	srv := services.ExportNewMemoryService(db, logger)
+	srv := services.ExportNewMemoryService(db, cache, logger)
 	ctx := services.ExportMakeToken(1)
 	now := time.Now()
 
@@ -194,9 +198,10 @@ func TestUpdateMemory(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cache, _ := services.ExportSetUpCache()
 
 	logger := log.New(os.Stderr, "[test] ", log.Ltime)
-	srv := services.ExportNewMemoryService(db, logger)
+	srv := services.ExportNewMemoryService(db, cache, logger)
 	ctx := services.ExportMakeToken(1)
 	now := time.Now()
 

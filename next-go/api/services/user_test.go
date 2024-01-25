@@ -23,9 +23,10 @@ func TestAuthUser(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cache, _ := services.ExportSetUpCache()
 
 	logger := log.New(os.Stderr, "[test] ", log.Ltime)
-	srv := services.ExportNewUserService(db, logger)
+	srv := services.ExportNewUserService(db, cache, logger)
 	ctx := services.ExportMakeToken(1)
 	now := time.Now()
 
@@ -61,9 +62,10 @@ func TestUsers(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cache, _ := services.ExportSetUpCache()
 
 	logger := log.New(os.Stderr, "[test] ", log.Ltime)
-	srv := services.ExportNewUserService(db, logger)
+	srv := services.ExportNewUserService(db, cache, logger)
 	now := time.Now()
 
 	tests := []struct {
@@ -100,9 +102,10 @@ func TestUserByID(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cache, _ := services.ExportSetUpCache()
 
 	logger := log.New(os.Stderr, "[test] ", log.Ltime)
-	srv := services.ExportNewUserService(db, logger)
+	srv := services.ExportNewUserService(db, cache, logger)
 	now := time.Now()
 
 	tests := []struct {
@@ -137,9 +140,10 @@ func TestNewUser(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cache, _ := services.ExportSetUpCache()
 
 	logger := log.New(os.Stderr, "[test] ", log.Ltime)
-	srv := services.ExportNewUserService(db, logger)
+	srv := services.ExportNewUserService(db, cache, logger)
 
 	tests := []struct {
 		title string
@@ -185,9 +189,10 @@ func TestUpdateUser(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cache, _ := services.ExportSetUpCache()
 
 	logger := log.New(os.Stderr, "[test] ", log.Ltime)
-	srv := services.ExportNewUserService(db, logger)
+	srv := services.ExportNewUserService(db, cache, logger)
 	ctx := services.ExportMakeToken(1)
 
 	tests := []struct {

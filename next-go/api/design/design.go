@@ -223,6 +223,54 @@ var _ = Service("server", func() {
 			Response(StatusOK)
 		})
 	})
+
+	// heavy ////////////////////////////////////////////////////////
+	Method("newHeavy", func() {
+		Security(JWTAuth, func() {
+			Scope("api:access")
+		})
+		Payload(func() {
+			Token("token", String, "JWT token auth")
+			Required("token")
+		})
+		Result(String)
+		HTTP(func() {
+			POST("/heavy")
+			Response(StatusOK)
+		})
+	})
+
+	Method("checkHeavy", func() {
+		Security(JWTAuth, func() {
+			Scope("api:access")
+		})
+		Payload(func() {
+			Token("token", String, "JWT token auth")
+			Attribute("id", Int, "ID")
+			Required("token", "id")
+		})
+		Result(Int)
+		HTTP(func() {
+			GET("/heavy/{id}")
+			Response(StatusOK)
+		})
+	})
+
+	Method("deleteHeavy", func() {
+		Security(JWTAuth, func() {
+			Scope("api:access")
+		})
+		Payload(func() {
+			Token("token", String, "JWT token auth")
+			Attribute("id", Int, "ID")
+			Required("token", "id")
+		})
+		Result(Boolean)
+		HTTP(func() {
+			DELETE("/heavy/{id}")
+			Response(StatusOK)
+		})
+	})
 })
 
 var User = ResultType("User", func() {

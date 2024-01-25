@@ -17,9 +17,10 @@ func TestHello(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cache, _ := services.ExportSetUpCache()
 
 	logger := log.New(os.Stderr, "[test] ", log.Ltime)
-	srv := services.ExportNewHelloService(db, logger)
+	srv := services.ExportNewHelloService(db, cache, logger)
 
 	tests := []struct {
 		title string

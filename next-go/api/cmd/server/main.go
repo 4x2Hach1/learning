@@ -15,6 +15,7 @@ import (
 	server "github.com/4x2Hach1/learning/next-go/api/gen/server"
 	api "github.com/4x2Hach1/learning/next-go/api/services"
 	"github.com/jmoiron/sqlx"
+	"github.com/redis/go-redis/v9"
 )
 
 func main() {
@@ -54,12 +55,24 @@ func main() {
 		defer db.Close()
 	}
 
+	var (
+		cache   *redis.Client
+		ADDRESS = fmt.Sprintf(
+			"%s:%s", os.Getenv("CACHE_HOST"), os.Getenv("CACHE_PORT"),
+		)
+	)
+	{
+		cache = redis.NewClient(&redis.Options{
+			Addr: ADDRESS,
+		})
+	}
+
 	// Initialize the services.
 	var (
 		serverSvc server.Service
 	)
 	{
-		serverSvc = api.NewServer(db, logger)
+		serverSvc = api.NewServer(db, cache, logger)
 	}
 
 	// Wrap the services in endpoints that can be invoked from other services
