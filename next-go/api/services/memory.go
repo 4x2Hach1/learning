@@ -2,18 +2,14 @@ package services
 
 import (
 	"context"
-	"log"
 	"time"
 
-	"github.com/4x2Hach1/learning/next-go/api/cache"
 	"github.com/4x2Hach1/learning/next-go/api/database/models"
 	"github.com/4x2Hach1/learning/next-go/api/gen/server"
 )
 
 type memoryService struct {
-	db     *models.Sql
-	cache  *cache.Cache
-	logger *log.Logger
+	*serverInfr
 }
 
 func (s *memoryService) Memories(ctx context.Context, p *server.MemoriesPayload) ([]*server.Memory, error) {

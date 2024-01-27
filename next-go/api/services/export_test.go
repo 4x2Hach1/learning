@@ -13,19 +13,19 @@ import (
 )
 
 func ExportNewAuthService(db *models.Sql, cache *cache.Cache, logger *log.Logger) authService {
-	return authService{db, cache, logger}
+	return authService{&serverInfr{db, cache, logger}}
 }
 
 func ExportNewHelloService(db *models.Sql, cache *cache.Cache, logger *log.Logger) helloService {
-	return helloService{db, cache, logger}
+	return helloService{&serverInfr{db, cache, logger}}
 }
 
 func ExportNewUserService(db *models.Sql, cache *cache.Cache, logger *log.Logger) userService {
-	return userService{db, cache, logger}
+	return userService{&serverInfr{db, cache, logger}}
 }
 
 func ExportNewMemoryService(db *models.Sql, cache *cache.Cache, logger *log.Logger) memoryService {
-	return memoryService{db, cache, logger}
+	return memoryService{&serverInfr{db, cache, logger}}
 }
 
 func ExportSetUpMockDB() (*models.Sql, sqlmock.Sqlmock, error) {

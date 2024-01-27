@@ -10,6 +10,12 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+type serverInfr struct {
+	db     *models.Sql
+	cache  *cache.Cache
+	logger *log.Logger
+}
+
 // server service example implementation.
 // The example methods log the requests and return zero values.
 type serversrvc struct {
@@ -28,12 +34,13 @@ func NewServer(
 ) server.Service {
 	sql := models.NewSqlDB(db)
 	c := cache.NewCache(rds)
+	infr := &serverInfr{sql, c, logger}
 
 	return &serversrvc{
-		&authService{sql, c, logger},
-		&helloService{sql, c, logger},
-		&userService{sql, c, logger},
-		&memoryService{sql, c, logger},
-		&heavyService{sql, c, logger},
+		&authService{infr},
+		&helloService{infr},
+		&userService{infr},
+		&memoryService{infr},
+		&heavyService{infr},
 	}
 }
