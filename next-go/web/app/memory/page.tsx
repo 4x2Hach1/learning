@@ -5,6 +5,7 @@ import { authUser } from "@/utils/functions";
 import { ApiMemories, ApiMemoriesSchema, ApiUser } from "@/utils/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Heavy from "./heavy";
 
 export default function Page() {
   const route = useRouter();
@@ -31,7 +32,6 @@ export default function Page() {
           });
 
           const body = await res.json();
-          console.log(body);
           const resMemories = ApiMemoriesSchema.parse(body);
           setMemories(resMemories);
         } catch (error) {
@@ -59,6 +59,7 @@ export default function Page() {
             ログアウト
           </button>
         </div>
+        <Heavy />
         <p className="my-8">
           <a href="/memory/new">投稿</a>
         </p>

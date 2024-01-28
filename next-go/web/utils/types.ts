@@ -22,3 +22,9 @@ export type ApiMemory = z.infer<typeof ApiMemorySchema>;
 
 export const ApiMemoriesSchema = z.array(ApiMemorySchema);
 export type ApiMemories = z.infer<typeof ApiMemoriesSchema>;
+
+export const ApiHeavySchema = z.string();
+export type ApiHeavy = z.infer<typeof ApiHeavySchema>;
+
+export const ApiHeavyCheckSchema = z.number();
+export type ApiHeavyCheck = z.infer<typeof ApiHeavyCheckSchema>;
