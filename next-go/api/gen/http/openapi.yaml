@@ -13,6 +13,88 @@ produces:
     - application/xml
     - application/gob
 paths:
+    /heavy:
+        post:
+            tags:
+                - server
+            summary: newHeavy server
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `api:access`
+            operationId: server#newHeavy
+            parameters:
+                - name: Authorization
+                  in: header
+                  description: JWT token auth
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        type: string
+            schemes:
+                - http
+            security:
+                - jwt_header_Authorization: []
+    /heavy/{key}:
+        get:
+            tags:
+                - server
+            summary: checkHeavy server
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `api:access`
+            operationId: server#checkHeavy
+            parameters:
+                - name: key
+                  in: path
+                  description: Key
+                  required: true
+                  type: string
+                - name: Authorization
+                  in: header
+                  description: JWT token auth
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        type: integer
+                        format: int64
+            schemes:
+                - http
+            security:
+                - jwt_header_Authorization: []
+        delete:
+            tags:
+                - server
+            summary: deleteHeavy server
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `api:access`
+            operationId: server#deleteHeavy
+            parameters:
+                - name: key
+                  in: path
+                  description: Key
+                  required: true
+                  type: string
+                - name: Authorization
+                  in: header
+                  description: JWT token auth
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        type: boolean
+            schemes:
+                - http
+            security:
+                - jwt_header_Authorization: []
     /hello/{name}:
         get:
             tags:
@@ -32,12 +114,305 @@ paths:
                         type: string
             schemes:
                 - http
+    /login:
+        post:
+            tags:
+                - server
+            summary: login server
+            operationId: server#login
+            parameters:
+                - name: LoginRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/ServerLoginRequestBody'
+                    required:
+                        - email
+                        - password
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        type: string
+            schemes:
+                - http
+    /memories:
+        get:
+            tags:
+                - server
+            summary: memories server
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `api:access`
+            operationId: server#memories
+            parameters:
+                - name: Authorization
+                  in: header
+                  description: JWT token auth
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/definitions/MemoryResponse'
+            schemes:
+                - http
+            security:
+                - jwt_header_Authorization: []
+    /memory:
+        post:
+            tags:
+                - server
+            summary: newMemory server
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `api:access`
+            operationId: server#newMemory
+            parameters:
+                - name: Authorization
+                  in: header
+                  description: JWT token auth
+                  required: true
+                  type: string
+                - name: NewMemoryRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/ServerNewMemoryRequestBody'
+                    required:
+                        - title
+                        - date
+                        - location
+                        - detail
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        type: boolean
+            schemes:
+                - http
+            security:
+                - jwt_header_Authorization: []
+    /memory/{id}:
+        get:
+            tags:
+                - server
+            summary: memoryById server
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `api:access`
+            operationId: server#memoryById
+            parameters:
+                - name: id
+                  in: path
+                  description: ID
+                  required: true
+                  type: integer
+                - name: Authorization
+                  in: header
+                  description: JWT token auth
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        $ref: '#/definitions/ServerMemoryByIDResponseBody'
+            schemes:
+                - http
+            security:
+                - jwt_header_Authorization: []
+        delete:
+            tags:
+                - server
+            summary: deleteMemory server
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `api:access`
+            operationId: server#deleteMemory
+            parameters:
+                - name: id
+                  in: path
+                  description: ID
+                  required: true
+                  type: integer
+                - name: Authorization
+                  in: header
+                  description: JWT token auth
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        type: boolean
+            schemes:
+                - http
+            security:
+                - jwt_header_Authorization: []
+        patch:
+            tags:
+                - server
+            summary: updateMemory server
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `api:access`
+            operationId: server#updateMemory
+            parameters:
+                - name: id
+                  in: path
+                  description: ID
+                  required: true
+                  type: integer
+                - name: Authorization
+                  in: header
+                  description: JWT token auth
+                  required: true
+                  type: string
+                - name: UpdateMemoryRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/ServerUpdateMemoryRequestBody'
+                    required:
+                        - title
+                        - date
+                        - location
+                        - detail
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        type: boolean
+            schemes:
+                - http
+            security:
+                - jwt_header_Authorization: []
+    /user:
+        post:
+            tags:
+                - server
+            summary: newUser server
+            operationId: server#newUser
+            parameters:
+                - name: NewUserRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/ServerNewUserRequestBody'
+                    required:
+                        - name
+                        - email
+                        - password
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        type: boolean
+            schemes:
+                - http
+        patch:
+            tags:
+                - server
+            summary: updateUser server
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `api:access`
+            operationId: server#updateUser
+            parameters:
+                - name: Authorization
+                  in: header
+                  description: JWT token auth
+                  required: true
+                  type: string
+                - name: UpdateUserRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/ServerUpdateUserRequestBody'
+                    required:
+                        - name
+                        - email
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        type: boolean
+            schemes:
+                - http
+            security:
+                - jwt_header_Authorization: []
+    /user/{id}:
+        get:
+            tags:
+                - server
+            summary: userById server
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `api:access`
+            operationId: server#userById
+            parameters:
+                - name: id
+                  in: path
+                  description: ID
+                  required: true
+                  type: integer
+                - name: Authorization
+                  in: header
+                  description: JWT token auth
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        $ref: '#/definitions/ServerUserByIDResponseBody'
+            schemes:
+                - http
+            security:
+                - jwt_header_Authorization: []
+    /user/auth:
+        get:
+            tags:
+                - server
+            summary: authUser server
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `api:access`
+            operationId: server#authUser
+            parameters:
+                - name: Authorization
+                  in: header
+                  description: JWT token auth
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        $ref: '#/definitions/ServerAuthUserResponseBody'
+            schemes:
+                - http
+            security:
+                - jwt_header_Authorization: []
     /users:
         get:
             tags:
                 - server
             summary: users server
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `api:access`
             operationId: server#users
+            parameters:
+                - name: Authorization
+                  in: header
+                  description: JWT token auth
+                  required: true
+                  type: string
             responses:
                 "200":
                     description: OK response.
@@ -47,26 +422,282 @@ paths:
                             $ref: '#/definitions/UserResponse'
             schemes:
                 - http
+            security:
+                - jwt_header_Authorization: []
 definitions:
+    MemoryResponse:
+        title: 'Mediatype identifier: memory; view=default'
+        type: object
+        properties:
+            date:
+                type: string
+                description: Date
+                example: "2004-11-08"
+                format: date
+            detail:
+                type: string
+                description: Detail
+                example: Est repellendus fugiat sit.
+            id:
+                type: integer
+                description: ID
+                example: 8525731184413914490
+                format: int64
+            location:
+                type: string
+                description: Location
+                example: Quas consequatur excepturi ullam non.
+            title:
+                type: string
+                description: Title
+                example: Vero aut sunt vitae aut et maiores.
+            users_id:
+                type: integer
+                description: UsersId
+                example: 6853505529454444471
+                format: int64
+        description: MemoryResponse result type (default view)
+        example:
+            date: "1992-11-05"
+            detail: At eveniet exercitationem non.
+            id: 3964767239259626400
+            location: Aut doloribus.
+            title: Et maxime est sed.
+            users_id: 3935171277307517701
+    ServerAuthUserResponseBody:
+        title: 'Mediatype identifier: user; view=default'
+        type: object
+        properties:
+            email:
+                type: string
+                description: Email
+                example: Voluptas aut consequatur.
+            id:
+                type: integer
+                description: ID
+                example: 4550391357741454322
+                format: int64
+            name:
+                type: string
+                description: Name
+                example: Rerum illo qui placeat molestias.
+        description: AuthUserResponseBody result type (default view)
+        example:
+            email: Qui maiores soluta est amet.
+            id: 3614294564687173364
+            name: Provident quia quam rem earum.
+    ServerLoginRequestBody:
+        title: ServerLoginRequestBody
+        type: object
+        properties:
+            email:
+                type: string
+                description: Email
+                example: Quia est temporibus.
+            password:
+                type: string
+                description: Password
+                example: Eos nostrum dolor sunt.
+        example:
+            email: Porro consequuntur totam minus sapiente.
+            password: Harum in qui cum quos velit.
+        required:
+            - email
+            - password
+    ServerMemoryByIDResponseBody:
+        title: 'Mediatype identifier: memory; view=default'
+        type: object
+        properties:
+            date:
+                type: string
+                description: Date
+                example: "2012-12-08"
+                format: date
+            detail:
+                type: string
+                description: Detail
+                example: Aut dicta aut nisi provident voluptatibus error.
+            id:
+                type: integer
+                description: ID
+                example: 5545185353498091324
+                format: int64
+            location:
+                type: string
+                description: Location
+                example: Voluptatem deleniti cum exercitationem.
+            title:
+                type: string
+                description: Title
+                example: Quis provident at sunt omnis.
+            users_id:
+                type: integer
+                description: UsersId
+                example: 1546772335130953943
+                format: int64
+        description: MemoryByIdResponseBody result type (default view)
+        example:
+            date: "1987-11-20"
+            detail: Dolorum accusamus aliquam iure distinctio.
+            id: 3338333011914612963
+            location: Qui et labore quo enim laborum ducimus.
+            title: Quo dolore eligendi similique veniam tempore.
+            users_id: 4780768155327674966
+    ServerNewMemoryRequestBody:
+        title: ServerNewMemoryRequestBody
+        type: object
+        properties:
+            date:
+                type: string
+                description: Date
+                example: "1991-07-25"
+                format: date
+            detail:
+                type: string
+                description: Detail
+                example: Quasi et quisquam.
+            location:
+                type: string
+                description: Location
+                example: Sapiente excepturi ut accusamus dolorum.
+            title:
+                type: string
+                description: Title
+                example: Repellendus ut placeat corrupti dolores.
+        example:
+            date: "1992-02-24"
+            detail: Commodi unde in vel sapiente doloremque facere.
+            location: Et mollitia sunt corrupti perferendis magnam.
+            title: Provident qui consequuntur facere voluptas delectus quia.
+        required:
+            - title
+            - date
+            - location
+            - detail
+    ServerNewUserRequestBody:
+        title: ServerNewUserRequestBody
+        type: object
+        properties:
+            email:
+                type: string
+                description: Email
+                example: Aspernatur est.
+            name:
+                type: string
+                description: Name
+                example: Recusandae dolor nihil enim consequuntur magni.
+            password:
+                type: string
+                description: Password
+                example: Quo quam dignissimos.
+        example:
+            email: Magnam veritatis occaecati alias dolore quis non.
+            name: Nihil repudiandae qui repellendus consequuntur ipsum.
+            password: Est qui quia ut dignissimos molestiae.
+        required:
+            - name
+            - email
+            - password
+    ServerUpdateMemoryRequestBody:
+        title: ServerUpdateMemoryRequestBody
+        type: object
+        properties:
+            date:
+                type: string
+                description: Date
+                example: "1986-03-18"
+                format: date
+            detail:
+                type: string
+                description: Detail
+                example: Nihil quo.
+            location:
+                type: string
+                description: Location
+                example: Ut iste recusandae aspernatur in cupiditate.
+            title:
+                type: string
+                description: Title
+                example: Aliquid voluptatem enim qui quidem.
+        example:
+            date: "1996-09-02"
+            detail: Labore inventore amet quibusdam.
+            location: Reiciendis neque voluptatum et id est.
+            title: Accusamus libero aut dolorem.
+        required:
+            - title
+            - date
+            - location
+            - detail
+    ServerUpdateUserRequestBody:
+        title: ServerUpdateUserRequestBody
+        type: object
+        properties:
+            email:
+                type: string
+                description: Email
+                example: Omnis illum debitis.
+            name:
+                type: string
+                description: Name
+                example: Libero debitis tenetur dolore voluptatem.
+        example:
+            email: Voluptatem eius et aperiam.
+            name: Sed ipsum ea minus voluptate.
+        required:
+            - name
+            - email
+    ServerUserByIDResponseBody:
+        title: 'Mediatype identifier: user; view=default'
+        type: object
+        properties:
+            email:
+                type: string
+                description: Email
+                example: Rem porro aut laborum.
+            id:
+                type: integer
+                description: ID
+                example: 2855052595021198126
+                format: int64
+            name:
+                type: string
+                description: Name
+                example: Ab autem.
+        description: UserByIdResponseBody result type (default view)
+        example:
+            email: Aliquid error asperiores.
+            id: 80948711121978728
+            name: Porro consequuntur exercitationem nobis.
     UserResponse:
         title: 'Mediatype identifier: user; view=default'
         type: object
         properties:
             email:
-                type: boolean
+                type: string
                 description: Email
-                example: false
+                example: Ad qui.
             id:
                 type: integer
                 description: ID
-                example: 5662336933204789771
+                example: 8629362285966991168
                 format: int64
             name:
                 type: string
                 description: Name
-                example: In aut mollitia illum.
+                example: Nulla in molestiae reiciendis nostrum reiciendis.
         description: UserResponse result type (default view)
         example:
-            email: false
-            id: 5630377860693557564
-            name: Quis exercitationem ut ipsum.
+            email: Voluptatem maiores et culpa in ea quia.
+            id: 8328674208351735533
+            name: Nulla voluptatum eos nulla dolores corrupti facilis.
+securityDefinitions:
+    jwt_header_Authorization:
+        type: apiKey
+        description: |-
+            JWT based authentication
+
+            **Security Scopes**:
+              * `api:access`: API access
+        name: Authorization
+        in: header

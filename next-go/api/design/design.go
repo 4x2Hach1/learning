@@ -246,12 +246,12 @@ var _ = Service("server", func() {
 		})
 		Payload(func() {
 			Token("token", String, "JWT token auth")
-			Attribute("id", Int, "ID")
-			Required("token", "id")
+			Attribute("key", String, "Key")
+			Required("token", "key")
 		})
 		Result(Int)
 		HTTP(func() {
-			GET("/heavy/{id}")
+			GET("/heavy/{key}")
 			Response(StatusOK)
 		})
 	})
@@ -262,12 +262,12 @@ var _ = Service("server", func() {
 		})
 		Payload(func() {
 			Token("token", String, "JWT token auth")
-			Attribute("id", Int, "ID")
-			Required("token", "id")
+			Attribute("key", String, "Key")
+			Required("token", "key")
 		})
 		Result(Boolean)
 		HTTP(func() {
-			DELETE("/heavy/{id}")
+			DELETE("/heavy/{key}")
 			Response(StatusOK)
 		})
 	})

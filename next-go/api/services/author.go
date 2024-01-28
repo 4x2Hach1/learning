@@ -33,7 +33,7 @@ func getUserFromCtx(ctx context.Context) *UserJwtClaims {
 }
 
 func encodePassword(password string) string {
-	hashKey := sha256.Sum256(([]byte(password)))
+	hashKey := sha256.Sum256([]byte(password))
 	encodeHashKey := hex.EncodeToString(hashKey[:])
 	return encodeHashKey
 }

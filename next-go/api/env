@@ -1,6 +1,7 @@
 # user
 TOKEN=
 TEST_TOKEN=
+HEAVY_KEY=
 
 # DB
 DB_DRIVER=
@@ -8,4 +9,8 @@ DB_USER=
 DB_PASS=
 DB_HOST=
 DB_PORT=
-DB_TABLE=
+DB_NAME=
+
+# cache
+CACHE_HOST=
+CACHE_PORT=

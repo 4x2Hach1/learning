@@ -24,6 +24,10 @@ func ExportNewUserService(db *models.Sql, cache *cache.Cache, logger *log.Logger
 	return userService{&serverInfr{db, cache, logger}}
 }
 
+func ExportNewHeavyService(db *models.Sql, cache *cache.Cache, logger *log.Logger) heavyService {
+	return heavyService{&serverInfr{db, cache, logger}}
+}
+
 func ExportNewMemoryService(db *models.Sql, cache *cache.Cache, logger *log.Logger) memoryService {
 	return memoryService{&serverInfr{db, cache, logger}}
 }

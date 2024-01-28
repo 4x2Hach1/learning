@@ -6,6 +6,80 @@ info:
 servers:
     - url: http://localhost:4000
 paths:
+    /heavy:
+        post:
+            tags:
+                - server
+            summary: newHeavy server
+            operationId: server#newHeavy
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                type: string
+                                example: Maiores suscipit omnis non in necessitatibus aut.
+                            example: Illum omnis.
+            security:
+                - jwt_header_Authorization:
+                    - api:access
+    /heavy/{key}:
+        delete:
+            tags:
+                - server
+            summary: deleteHeavy server
+            operationId: server#deleteHeavy
+            parameters:
+                - name: key
+                  in: path
+                  description: Key
+                  required: true
+                  schema:
+                    type: string
+                    description: Key
+                    example: Consequatur consequatur et id.
+                  example: Ut optio.
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                type: boolean
+                                example: false
+                            example: false
+            security:
+                - jwt_header_Authorization:
+                    - api:access
+        get:
+            tags:
+                - server
+            summary: checkHeavy server
+            operationId: server#checkHeavy
+            parameters:
+                - name: key
+                  in: path
+                  description: Key
+                  required: true
+                  schema:
+                    type: string
+                    description: Key
+                    example: Sint ut.
+                  example: Hic nobis.
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                type: integer
+                                example: 7377306795450402818
+                                format: int64
+                            example: 2660453972942030041
+            security:
+                - jwt_header_Authorization:
+                    - api:access
     /hello/{name}:
         get:
             tags:
@@ -20,8 +94,8 @@ paths:
                   schema:
                     type: string
                     description: Name
-                    example: Quia sit ut aut tenetur consequatur.
-                  example: Quasi at omnis aut consequatur id.
+                    example: Nesciunt minima sint rerum consectetur placeat.
+                  example: Culpa et voluptatem eum.
             responses:
                 "200":
                     description: OK response.
@@ -29,8 +103,308 @@ paths:
                         application/json:
                             schema:
                                 type: string
-                                example: Minus cum.
-                            example: Cumque nostrum aut.
+                                example: Vitae facilis quis.
+                            example: Rerum facere.
+    /login:
+        post:
+            tags:
+                - server
+            summary: login server
+            operationId: server#login
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/LoginRequestBody'
+                        example:
+                            email: Ea qui.
+                            password: Et saepe non.
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                type: string
+                                example: Eveniet vel eius unde quam in quam.
+                            example: Amet ut.
+    /memories:
+        get:
+            tags:
+                - server
+            summary: memories server
+            operationId: server#memories
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Memory'
+                                example:
+                                    - date: "1975-04-25"
+                                      detail: Et quam dolores.
+                                      id: 311339627466747049
+                                      location: Quidem nam officia.
+                                      title: Quis deleniti earum qui autem rerum temporibus.
+                                      users_id: 3826987257536671632
+                                    - date: "1975-04-25"
+                                      detail: Et quam dolores.
+                                      id: 311339627466747049
+                                      location: Quidem nam officia.
+                                      title: Quis deleniti earum qui autem rerum temporibus.
+                                      users_id: 3826987257536671632
+                            example:
+                                - date: "1975-04-25"
+                                  detail: Et quam dolores.
+                                  id: 311339627466747049
+                                  location: Quidem nam officia.
+                                  title: Quis deleniti earum qui autem rerum temporibus.
+                                  users_id: 3826987257536671632
+                                - date: "1975-04-25"
+                                  detail: Et quam dolores.
+                                  id: 311339627466747049
+                                  location: Quidem nam officia.
+                                  title: Quis deleniti earum qui autem rerum temporibus.
+                                  users_id: 3826987257536671632
+            security:
+                - jwt_header_Authorization:
+                    - api:access
+    /memory:
+        post:
+            tags:
+                - server
+            summary: newMemory server
+            operationId: server#newMemory
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/NewMemoryRequestBody'
+                        example:
+                            date: "2004-11-09"
+                            detail: Reiciendis suscipit possimus eligendi.
+                            location: Aspernatur repellendus veritatis.
+                            title: Et et.
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                type: boolean
+                                example: true
+                            example: true
+            security:
+                - jwt_header_Authorization:
+                    - api:access
+    /memory/{id}:
+        delete:
+            tags:
+                - server
+            summary: deleteMemory server
+            operationId: server#deleteMemory
+            parameters:
+                - name: id
+                  in: path
+                  description: ID
+                  required: true
+                  schema:
+                    type: integer
+                    description: ID
+                    example: 5304130364861389294
+                    format: int64
+                  example: 1196041965785681093
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                type: boolean
+                                example: true
+                            example: false
+            security:
+                - jwt_header_Authorization:
+                    - api:access
+        get:
+            tags:
+                - server
+            summary: memoryById server
+            operationId: server#memoryById
+            parameters:
+                - name: id
+                  in: path
+                  description: ID
+                  required: true
+                  schema:
+                    type: integer
+                    description: ID
+                    example: 5908462674737435460
+                    format: int64
+                  example: 5426728596454686916
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Memory'
+                            example:
+                                date: "1982-08-21"
+                                detail: Iusto dignissimos et illo consectetur illum.
+                                id: 5854911434894626768
+                                location: Quia perspiciatis beatae.
+                                title: Neque provident consequatur laboriosam optio fugiat.
+                                users_id: 1674184294528950889
+            security:
+                - jwt_header_Authorization:
+                    - api:access
+        patch:
+            tags:
+                - server
+            summary: updateMemory server
+            operationId: server#updateMemory
+            parameters:
+                - name: id
+                  in: path
+                  description: ID
+                  required: true
+                  schema:
+                    type: integer
+                    description: ID
+                    example: 6013093459232185083
+                    format: int64
+                  example: 7917106383229435165
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/NewMemoryRequestBody'
+                        example:
+                            date: "1974-01-04"
+                            detail: Nihil officia officiis dignissimos magni ea sed.
+                            location: Harum sapiente dolor ut provident pariatur non.
+                            title: Veniam id neque nam sunt eos vero.
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                type: boolean
+                                example: true
+                            example: false
+            security:
+                - jwt_header_Authorization:
+                    - api:access
+    /user:
+        patch:
+            tags:
+                - server
+            summary: updateUser server
+            operationId: server#updateUser
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateUserRequestBody'
+                        example:
+                            email: Iure aliquid deserunt enim.
+                            name: Molestiae nostrum.
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                type: boolean
+                                example: true
+                            example: true
+            security:
+                - jwt_header_Authorization:
+                    - api:access
+        post:
+            tags:
+                - server
+            summary: newUser server
+            operationId: server#newUser
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/NewUserRequestBody'
+                        example:
+                            email: A enim praesentium modi dicta cumque.
+                            name: Autem tempore fugit.
+                            password: At molestiae aliquam pariatur.
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                type: boolean
+                                example: true
+                            example: true
+    /user/{id}:
+        get:
+            tags:
+                - server
+            summary: userById server
+            operationId: server#userById
+            parameters:
+                - name: id
+                  in: path
+                  description: ID
+                  required: true
+                  schema:
+                    type: integer
+                    description: ID
+                    example: 6144771171391786348
+                    format: int64
+                  example: 2905091436525311682
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                            example:
+                                email: Voluptas quidem molestias rem voluptatibus est et.
+                                id: 938025188924067221
+                                name: Et saepe earum optio libero ipsam.
+            security:
+                - jwt_header_Authorization:
+                    - api:access
+    /user/auth:
+        get:
+            tags:
+                - server
+            summary: authUser server
+            operationId: server#authUser
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                            example:
+                                email: Voluptatibus a commodi.
+                                id: 2418068267655900169
+                                name: Corporis minima soluta veritatis provident at aspernatur.
+            security:
+                - jwt_header_Authorization:
+                    - api:access
     /users:
         get:
             tags:
@@ -47,47 +421,185 @@ paths:
                                 items:
                                     $ref: '#/components/schemas/User'
                                 example:
-                                    - email: false
-                                      id: 8125601974708616722
-                                      name: Praesentium sunt cum aut blanditiis accusantium.
-                                    - email: false
-                                      id: 8125601974708616722
-                                      name: Praesentium sunt cum aut blanditiis accusantium.
-                                    - email: false
-                                      id: 8125601974708616722
-                                      name: Praesentium sunt cum aut blanditiis accusantium.
-                                    - email: false
-                                      id: 8125601974708616722
-                                      name: Praesentium sunt cum aut blanditiis accusantium.
+                                    - email: Ducimus est.
+                                      id: 2516803090752956489
+                                      name: Vel nesciunt omnis.
+                                    - email: Ducimus est.
+                                      id: 2516803090752956489
+                                      name: Vel nesciunt omnis.
+                                    - email: Ducimus est.
+                                      id: 2516803090752956489
+                                      name: Vel nesciunt omnis.
+                                    - email: Ducimus est.
+                                      id: 2516803090752956489
+                                      name: Vel nesciunt omnis.
                             example:
-                                - email: false
-                                  id: 8125601974708616722
-                                  name: Praesentium sunt cum aut blanditiis accusantium.
-                                - email: false
-                                  id: 8125601974708616722
-                                  name: Praesentium sunt cum aut blanditiis accusantium.
+                                - email: Ducimus est.
+                                  id: 2516803090752956489
+                                  name: Vel nesciunt omnis.
+                                - email: Ducimus est.
+                                  id: 2516803090752956489
+                                  name: Vel nesciunt omnis.
+                                - email: Ducimus est.
+                                  id: 2516803090752956489
+                                  name: Vel nesciunt omnis.
+                                - email: Ducimus est.
+                                  id: 2516803090752956489
+                                  name: Vel nesciunt omnis.
+            security:
+                - jwt_header_Authorization:
+                    - api:access
 components:
     schemas:
+        LoginRequestBody:
+            type: object
+            properties:
+                email:
+                    type: string
+                    description: Email
+                    example: Nobis et soluta vel.
+                password:
+                    type: string
+                    description: Password
+                    example: Natus ab et.
+            example:
+                email: Aliquam officia inventore nobis vitae aspernatur.
+                password: Tempora rerum sed officiis delectus inventore doloremque.
+            required:
+                - email
+                - password
+        Memory:
+            type: object
+            properties:
+                date:
+                    type: string
+                    description: Date
+                    example: "1988-05-12"
+                    format: date
+                detail:
+                    type: string
+                    description: Detail
+                    example: Culpa vero eos harum at.
+                id:
+                    type: integer
+                    description: ID
+                    example: 8464081352929775220
+                    format: int64
+                location:
+                    type: string
+                    description: Location
+                    example: Ut ea repudiandae nihil quisquam repellendus.
+                title:
+                    type: string
+                    description: Title
+                    example: Qui libero unde.
+                users_id:
+                    type: integer
+                    description: UsersId
+                    example: 939706354754716616
+                    format: int64
+            example:
+                date: "1990-11-12"
+                detail: Totam quia eius.
+                id: 1416034286383376143
+                location: Culpa odit autem et quidem et aut.
+                title: Laborum suscipit et ducimus numquam.
+                users_id: 398652016775022188
+        NewMemoryRequestBody:
+            type: object
+            properties:
+                date:
+                    type: string
+                    description: Date
+                    example: "1987-05-20"
+                    format: date
+                detail:
+                    type: string
+                    description: Detail
+                    example: Maiores in sequi dolor ab velit aliquid.
+                location:
+                    type: string
+                    description: Location
+                    example: Odit harum possimus totam nam quibusdam tenetur.
+                title:
+                    type: string
+                    description: Title
+                    example: Odio cumque rem unde.
+            example:
+                date: "1995-07-10"
+                detail: Tenetur illo eligendi.
+                location: Quas quia adipisci qui quod id reiciendis.
+                title: Nisi sed quia veniam consequatur distinctio.
+            required:
+                - title
+                - date
+                - location
+                - detail
+        NewUserRequestBody:
+            type: object
+            properties:
+                email:
+                    type: string
+                    description: Email
+                    example: Id occaecati iste aspernatur nihil repudiandae harum.
+                name:
+                    type: string
+                    description: Name
+                    example: Voluptas sequi ut dolores magni sint quibusdam.
+                password:
+                    type: string
+                    description: Password
+                    example: Saepe maxime.
+            example:
+                email: Et magni.
+                name: Eum nesciunt consequatur tempore neque cupiditate dolores.
+                password: Placeat ad.
+            required:
+                - name
+                - email
+                - password
+        UpdateUserRequestBody:
+            type: object
+            properties:
+                email:
+                    type: string
+                    description: Email
+                    example: Quibusdam rerum.
+                name:
+                    type: string
+                    description: Name
+                    example: Repellendus debitis cupiditate rerum repudiandae.
+            example:
+                email: Sapiente voluptatem necessitatibus libero vel.
+                name: Modi recusandae possimus eum consectetur.
+            required:
+                - name
+                - email
         User:
             type: object
             properties:
                 email:
-                    type: boolean
+                    type: string
                     description: Email
-                    example: false
+                    example: Quaerat et.
                 id:
                     type: integer
                     description: ID
-                    example: 6104545963114438964
+                    example: 1543439711375965925
                     format: int64
                 name:
                     type: string
                     description: Name
-                    example: Eum officiis qui et et dolor fuga.
+                    example: Omnis temporibus aliquam.
             example:
-                email: true
-                id: 3819334598922553237
-                name: Deserunt voluptates.
+                email: Perspiciatis porro iusto harum qui provident itaque.
+                id: 3087397015802639040
+                name: Minus molestiae.
+    securitySchemes:
+        jwt_header_Authorization:
+            type: http
+            description: JWT based authentication
+            scheme: bearer
 tags:
     - name: server
       description: Server Service for front.
