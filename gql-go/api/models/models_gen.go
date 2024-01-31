@@ -2,7 +2,31 @@
 
 package models
 
+import (
+	"time"
+)
+
+type DeleteMemory struct {
+	ID int `json:"id"`
+}
+
+type Memory struct {
+	ID       int       `json:"id"`
+	UserID   int       `json:"userId"`
+	Title    string    `json:"title"`
+	Date     time.Time `json:"date"`
+	Location *string   `json:"location,omitempty"`
+	Detail   *string   `json:"detail,omitempty"`
+}
+
 type Mutation struct {
+}
+
+type NewMemory struct {
+	Title    string    `json:"title"`
+	Date     time.Time `json:"date"`
+	Location *string   `json:"location,omitempty"`
+	Detail   *string   `json:"detail,omitempty"`
 }
 
 type NewUser struct {
@@ -12,6 +36,14 @@ type NewUser struct {
 }
 
 type Query struct {
+}
+
+type UpdateMemory struct {
+	ID       int       `json:"id"`
+	Title    string    `json:"title"`
+	Date     time.Time `json:"date"`
+	Location *string   `json:"location,omitempty"`
+	Detail   *string   `json:"detail,omitempty"`
 }
 
 type UpdateUser struct {

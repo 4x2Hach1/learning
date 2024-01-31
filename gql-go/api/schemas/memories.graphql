@@ -1,0 +1,38 @@
+extend type Query {
+  memory(id: Int!): Memory @isUserAuth
+  memories: [Memory!]! @isUserAuth
+}
+
+extend type Mutation {
+  newMemory(input: NewMemory!): Boolean! @isUserAuth
+  updateMemory(input: UpdateMemory!): Boolean! @isUserAuth
+  deleteMemory(input: DeleteMemory!): Boolean! @isUserAuth
+}
+
+type Memory {
+  id: Int!
+  userId: Int!
+  title: String!
+  date: DateTime!
+  location: String
+  detail: String
+}
+
+input NewMemory {
+  title: String!
+  date: DateTime!
+  location: String
+  detail: String
+}
+
+input UpdateMemory {
+  id: Int!
+  title: String!
+  date: DateTime!
+  location: String
+  detail: String
+}
+
+input DeleteMemory {
+  id: Int!
+}

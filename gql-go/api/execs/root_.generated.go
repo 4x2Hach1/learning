@@ -43,13 +43,27 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	Memory struct {
+		Date     func(childComplexity int) int
+		Detail   func(childComplexity int) int
+		ID       func(childComplexity int) int
+		Location func(childComplexity int) int
+		Title    func(childComplexity int) int
+		UserID   func(childComplexity int) int
+	}
+
 	Mutation struct {
-		NewUser    func(childComplexity int, input models.NewUser) int
-		UpdateUser func(childComplexity int, input models.UpdateUser) int
+		DeleteMemory func(childComplexity int, input models.DeleteMemory) int
+		NewMemory    func(childComplexity int, input models.NewMemory) int
+		NewUser      func(childComplexity int, input models.NewUser) int
+		UpdateMemory func(childComplexity int, input models.UpdateMemory) int
+		UpdateUser   func(childComplexity int, input models.UpdateUser) int
 	}
 
 	Query struct {
-		User func(childComplexity int, id int) int
+		Memories func(childComplexity int) int
+		Memory   func(childComplexity int, id int) int
+		User     func(childComplexity int, id int) int
 	}
 
 	User struct {
@@ -78,6 +92,72 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
+	case "Memory.date":
+		if e.complexity.Memory.Date == nil {
+			break
+		}
+
+		return e.complexity.Memory.Date(childComplexity), true
+
+	case "Memory.detail":
+		if e.complexity.Memory.Detail == nil {
+			break
+		}
+
+		return e.complexity.Memory.Detail(childComplexity), true
+
+	case "Memory.id":
+		if e.complexity.Memory.ID == nil {
+			break
+		}
+
+		return e.complexity.Memory.ID(childComplexity), true
+
+	case "Memory.location":
+		if e.complexity.Memory.Location == nil {
+			break
+		}
+
+		return e.complexity.Memory.Location(childComplexity), true
+
+	case "Memory.title":
+		if e.complexity.Memory.Title == nil {
+			break
+		}
+
+		return e.complexity.Memory.Title(childComplexity), true
+
+	case "Memory.userId":
+		if e.complexity.Memory.UserID == nil {
+			break
+		}
+
+		return e.complexity.Memory.UserID(childComplexity), true
+
+	case "Mutation.deleteMemory":
+		if e.complexity.Mutation.DeleteMemory == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteMemory_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteMemory(childComplexity, args["input"].(models.DeleteMemory)), true
+
+	case "Mutation.newMemory":
+		if e.complexity.Mutation.NewMemory == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_newMemory_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewMemory(childComplexity, args["input"].(models.NewMemory)), true
+
 	case "Mutation.newUser":
 		if e.complexity.Mutation.NewUser == nil {
 			break
@@ -90,6 +170,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.NewUser(childComplexity, args["input"].(models.NewUser)), true
 
+	case "Mutation.updateMemory":
+		if e.complexity.Mutation.UpdateMemory == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateMemory_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateMemory(childComplexity, args["input"].(models.UpdateMemory)), true
+
 	case "Mutation.updateUser":
 		if e.complexity.Mutation.UpdateUser == nil {
 			break
@@ -101,6 +193,25 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateUser(childComplexity, args["input"].(models.UpdateUser)), true
+
+	case "Query.memories":
+		if e.complexity.Query.Memories == nil {
+			break
+		}
+
+		return e.complexity.Query.Memories(childComplexity), true
+
+	case "Query.memory":
+		if e.complexity.Query.Memory == nil {
+			break
+		}
+
+		args, err := ec.field_Query_memory_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Memory(childComplexity, args["id"].(int)), true
 
 	case "Query.user":
 		if e.complexity.Query.User == nil {
@@ -143,7 +254,10 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputDeleteMemory,
+		ec.unmarshalInputNewMemory,
 		ec.unmarshalInputNewUser,
+		ec.unmarshalInputUpdateMemory,
 		ec.unmarshalInputUpdateUser,
 	)
 	first := true
@@ -242,6 +356,45 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
+	{Name: "../schemas/memories.graphql", Input: `extend type Query {
+  memory(id: Int!): Memory @isUserAuth
+  memories: [Memory!]! @isUserAuth
+}
+
+extend type Mutation {
+  newMemory(input: NewMemory!): Boolean! @isUserAuth
+  updateMemory(input: UpdateMemory!): Boolean! @isUserAuth
+  deleteMemory(input: DeleteMemory!): Boolean! @isUserAuth
+}
+
+type Memory {
+  id: Int!
+  userId: Int!
+  title: String!
+  date: DateTime!
+  location: String
+  detail: String
+}
+
+input NewMemory {
+  title: String!
+  date: DateTime!
+  location: String
+  detail: String
+}
+
+input UpdateMemory {
+  id: Int!
+  title: String!
+  date: DateTime!
+  location: String
+  detail: String
+}
+
+input DeleteMemory {
+  id: Int!
+}
+`, BuiltIn: false},
 	{Name: "../schemas/schema.graphql", Input: `type Query
 
 type Mutation

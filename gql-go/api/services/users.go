@@ -19,7 +19,7 @@ type UsersService interface {
 }
 
 type usersService struct {
-	exec boil.ContextExecutor
+	*serviceInfra
 }
 
 func convertUser(user *db.User) *models.User {
