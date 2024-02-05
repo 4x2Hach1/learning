@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  grpc-go-api:
+    tty: true
+    build: ./api
+    container_name: grpc-go-api
+    working_dir: /app
+    volumes:
+      - ./api:/app
+  grpc-go-db:
+    image: mysql:8.0.33
+    container_name: grpc-go-db
+    environment:
+      MYSQL_DATABASE: grpc
+      MYSQL_USER: user
+      MYSQL_PASSWORD: mysql
+      MYSQL_ROOT_PASSWORD: mysql
+    ports:
+      - 5055:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

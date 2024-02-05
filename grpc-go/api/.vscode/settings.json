@@ -1,0 +1,7 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "golang.go",
+  "go.testEnvFile": "${workspaceFolder}/.env",
+  "go.testExplorer.enable": true,
+  "go.testExplorer.alwaysRunBenchmarks": true
+}

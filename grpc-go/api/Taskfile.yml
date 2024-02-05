@@ -1,0 +1,28 @@
+version: "3"
+
+dotenv: [".env"]
+
+tasks:
+  default:
+    cmds:
+      - task --list-all
+  init:
+    cmds:
+      - curl -OL https://github.com/k0kubun/sqldef/releases/download/v0.16.15/mysqldef_linux_amd64.tar.gz
+      - tar xf mysqldef_linux_amd64.tar.gz -C /usr/local/bin/
+      - rm mysqldef_linux_amd64.tar.gz
+      - go install github.com/cosmtrek/air@latest
+      - go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+      - go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+  run:
+    cmds:
+      - air
+  test:
+    cmds:
+      - go test -cover -v -bench . -benchmem ./...
+  db-migrate:
+    cmds:
+      - mysqldef -u$DB_USER -p$DB_PASS -h$DB_HOST -P$DB_PORT $DB_NAME --file={{ .CLI_ARGS }}
+  protoc:
+    cmds:
+        - protoc -I. --go_out=. --go-grpc_out=. proto/*.proto
