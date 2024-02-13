@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	ServerService_Hello_FullMethodName = "/server.ServerService/Hello"
+	ServerService_User_FullMethodName  = "/server.ServerService/User"
 )
 
 // ServerServiceClient is the client API for ServerService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ServerServiceClient interface {
 	Hello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloResponse, error)
+	User(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserResponse, error)
 }
 
 type serverServiceClient struct {
@@ -46,11 +48,21 @@ func (c *serverServiceClient) Hello(ctx context.Context, in *HelloRequest, opts 
 	return out, nil
 }
 
+func (c *serverServiceClient) User(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
+	out := new(UserResponse)
+	err := c.cc.Invoke(ctx, ServerService_User_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ServerServiceServer is the server API for ServerService service.
 // All implementations must embed UnimplementedServerServiceServer
 // for forward compatibility
 type ServerServiceServer interface {
 	Hello(context.Context, *HelloRequest) (*HelloResponse, error)
+	User(context.Context, *UserRequest) (*UserResponse, error)
 	mustEmbedUnimplementedServerServiceServer()
 }
 
@@ -60,6 +72,9 @@ type UnimplementedServerServiceServer struct {
 
 func (UnimplementedServerServiceServer) Hello(context.Context, *HelloRequest) (*HelloResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Hello not implemented")
+}
+func (UnimplementedServerServiceServer) User(context.Context, *UserRequest) (*UserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method User not implemented")
 }
 func (UnimplementedServerServiceServer) mustEmbedUnimplementedServerServiceServer() {}
 
@@ -92,6 +107,24 @@ func _ServerService_Hello_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ServerService_User_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServerServiceServer).User(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ServerService_User_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServerServiceServer).User(ctx, req.(*UserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ServerService_ServiceDesc is the grpc.ServiceDesc for ServerService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -102,6 +135,10 @@ var ServerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Hello",
 			Handler:    _ServerService_Hello_Handler,
+		},
+		{
+			MethodName: "User",
+			Handler:    _ServerService_User_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
