@@ -1,6 +1,6 @@
 syntax = "proto3";
-package user;
-option go_package = "./pb";
+package proto.user.v1;
+option go_package = "github.com/4x2Hach1/learning/grpc-go/api/gen/proto/user/v1;userv1";
 
 message User{
     int32 id = 1;
@@ -15,3 +15,6 @@ message UserResponse {
     User user = 1;
 }
 
+service UserService {
+    rpc User(UserRequest) returns(UserResponse);
+}

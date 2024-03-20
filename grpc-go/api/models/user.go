@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/4x2Hach1/learning/grpc-go/api/pb"
+	userv1 "github.com/4x2Hach1/learning/grpc-go/api/gen/proto/user/v1"
 )
 
 type UserModel struct {
@@ -16,16 +16,16 @@ type UserModel struct {
 	UpdatedAt time.Time `db:"updated_at" json:"updated_at"`
 }
 
-func converUser(model *UserModel) *pb.User {
-	return &pb.User{
+func converUser(model *UserModel) *userv1.User {
+	return &userv1.User{
 		Id:    int32(model.ID),
 		Name:  model.Name,
 		Email: model.Email,
 	}
 }
 
-func converUsers(models []*UserModel) []*pb.User {
-	results := make([]*pb.User, 0, len(models))
+func converUsers(models []*UserModel) []*userv1.User {
+	results := make([]*userv1.User, 0, len(models))
 	for _, model := range models {
 		results = append(results, converUser(model))
 	}
@@ -33,7 +33,7 @@ func converUsers(models []*UserModel) []*pb.User {
 	return results
 }
 
-func (s *Sql) UserById(ctx context.Context, id int) (*pb.User, error) {
+func (s *Sql) UserById(ctx context.Context, id int) (*userv1.User, error) {
 	user := UserModel{}
 	if err := s.db.Get(&user, `SELECT * FROM users WHERE id = ?`, id); err != nil {
 		return nil, err
