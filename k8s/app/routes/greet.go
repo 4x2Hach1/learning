@@ -7,14 +7,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func greet(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, "Hello!")
+}
+
+func greetName(ctx *gin.Context) {
+	name := ctx.Param("name")
+	ctx.JSON(http.StatusOK, fmt.Sprintf("Hello %s!", name))
+}
+
 func addGreetRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("greet")
-
-	r.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, "hello")
-	})
-	r.GET("/:name", func(ctx *gin.Context) {
-		name := ctx.Param("name")
-		ctx.JSON(http.StatusOK, fmt.Sprintf("hello %s", name))
-	})
+	r.GET("/", greet)
+	r.GET("/:name", greetName)
 }
+
