@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: k8s-api-prod:1.0.1
+        image: k8s-api-prod:1.0.2
         resources:
           limits:
             memory: 100Mi
